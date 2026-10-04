@@ -1,0 +1,33 @@
+@layer reset, base, components, responsive;
+
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  * { margin: 0; }
+  button, input, textarea { font: inherit; }
+  button, a { -webkit-tap-highlight-color: transparent; }
+  button { color: inherit; border: 0; background: none; }
+  a { color: inherit; text-decoration: none; }
+  ul { padding: 0; list-style: none; }
+  button, a { touch-action: manipulation; }
+}
+
+@layer base {
+  :root { --ink: #060708; --surface: #0d0f10; --paper: #f2f1ed; --muted: #93999b; --signal: #b7ff4a; --line: #2b2e2e; --display: 'Barlow Condensed', Impact, sans-serif; --body: 'Manrope', Arial, sans-serif; --mono: 'IBM Plex Mono', monospace; --gutter: clamp(24px, 5vw, 100px); color: var(--paper); background: var(--ink); font-family: var(--body); font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; scroll-behavior: auto; scroll-padding-top: 88px; }
+  body { min-width: 320px; }
+  button { cursor: pointer; }
+  ::selection { background: var(--signal); color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--signal); outline-offset: 7px; }
+  main { position: relative; z-index: 2; }
+  section { scroll-margin-top: 12px; }
+  .section-shell { padding-inline: var(--gutter); max-width: 1920px; margin-inline: auto; }
+  .signal { color: var(--signal); }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  .dim { color: var(--muted); }
+  .eyebrow { font: 400 10px/1.6 var(--mono); letter-spacing: .08em; }
+  .outline { color: transparent; -webkit-text-stroke: 1px #808582; }
+  .section-top { display: flex; align-items: center; justify-content: space-between; gap: 24px; border-top: 1px solid var(--line); padding-top: 23px; margin-bottom: 70px; }
+  .section-display { font: 500 clamp(70px, 8vw, 136px)/.91 var(--display); letter-spacing: -.025em; }
+  .text-link { display: inline-flex; align-items: center; gap: 38px; font: 11px var(--mono); padding-block: 18px; border-bottom: 1px solid var(--paper); }
+  .text-link span { font-size: 22px; transition: transform .25s; }
+  .text-link:hover span { transform: translate(3px,-3px); }
+}
