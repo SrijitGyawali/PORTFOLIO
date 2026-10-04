@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 
 export default function RuntimeStatus() {
   const [renderer, setRenderer] = useState('loading')
-  const [online, setOnline] = useState(navigator.onLine)
+  // Build-time rendering has no connection state; assume online until the browser reports.
+  const [online, setOnline] = useState(() => navigator.onLine !== false)
   useEffect(() => {
     const updateRenderer = () => setRenderer(document.querySelector<HTMLElement>('.webgl-world')?.dataset.webgl ?? 'loading')
     const updateNetwork = () => setOnline(navigator.onLine)

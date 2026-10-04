@@ -1,4 +1,4 @@
-import { lazy, Suspense, useRef, useState } from 'react'
+import { lazy, Suspense, useRef, useState, useSyncExternalStore } from 'react'
 import { useRuntime } from './animation/useRuntime'
 import { useChoreography } from './animation/useChoreography'
 import { runtime, sceneSections } from './animation/runtime'
@@ -11,9 +11,11 @@ import RuntimeStatus from './components/RuntimeStatus'
 import ProjectDetail from './components/ProjectDetail'
 import WorldBoundary from './components/WorldBoundary'
 import { projects } from './data/projects'
+import { profile } from './data/profile'
 import type { Project } from './data/projects'
 
 const World = lazy(() => import('./webgl/World'))
+const noSubscription = () => () => {}
 
 function NameLine({ children }: { children: string }) {
   return <span className="name-line" aria-hidden="true">{children.split('').map((letter, index) => <span className="hero-letter" key={`${letter}-${index}`}>{letter}</span>)}</span>
@@ -25,6 +27,8 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [selected, setSelected] = useState<Project | null>(null)
   const [paused, setPaused] = useState(false)
+  // False in the prerendered HTML and during hydration, so the WebGL world mounts only in the browser.
+  const inBrowser = useSyncExternalStore(noSubscription, () => true, () => false)
   useRuntime()
   useChoreography(root)
 
@@ -37,7 +41,7 @@ export default function App() {
   return <div ref={root} className="app">
     <a className="skip-link" href="#verix">Skip to selected work</a>
     <div className="world-fallback" aria-hidden="true" />
-    <WorldBoundary><Suspense fallback={null}><World /></Suspense></WorldBoundary>
+    {inBrowser && <WorldBoundary><Suspense fallback={null}><World /></Suspense></WorldBoundary>}
     <div className="ambient-grain" aria-hidden="true" />
     <Navigation onIndex={() => setMenuOpen(true)} open={menuOpen} />
     <main>
@@ -74,7 +78,7 @@ export default function App() {
 
       <Architecture />
 
-      <section id="about" className="about section-shell" aria-labelledby="about-title"><div className="section-top"><span className="eyebrow">08 / THE ENGINEER</span><span className="eyebrow dim">BEYOND THE INTERFACE</span></div><h2 id="about-title" data-reveal>I CARE ABOUT<br />WHAT HAPPENS<br /><span className="outline">BEHIND</span><br />THE INTERFACE<span className="signal">.</span></h2><div className="about-copy"><span className="eyebrow signal">SRIJIT GYAWALI / BACKEND ENGINEER</span><p>I build high-performance backend and blockchain systems, with a focus on Go, concurrency, distributed architecture, programmable money and autonomous infrastructure.</p><div className="exploring"><span className="eyebrow dim">CURRENTLY EXPLORING</span><ul><li>Distributed systems</li><li>Go internals</li><li>Web3 infrastructure</li><li>Agentic systems</li></ul></div></div></section>
+      <section id="about" className="about section-shell" aria-labelledby="about-title"><div className="section-top"><span className="eyebrow">08 / THE ENGINEER</span><span className="eyebrow dim">BEYOND THE INTERFACE</span></div><h2 id="about-title" data-reveal>I CARE ABOUT<br />WHAT HAPPENS<br /><span className="outline">BEHIND</span><br />THE INTERFACE<span className="signal">.</span></h2><div className="about-copy"><span className="eyebrow signal">SRIJIT GYAWALI / BACKEND ENGINEER</span><p>{profile.summary}</p><div className="exploring"><span className="eyebrow dim">CURRENTLY EXPLORING</span><ul><li>Distributed systems</li><li>Go internals</li><li>Web3 infrastructure</li><li>Agentic systems</li></ul></div></div></section>
       <Contact />
     </main>
     <aside className="experience-controls" aria-label="Experience controls"><span className="chapter-readout" data-current-chapter>00 / INITIALIZATION</span><button onClick={toggleMotion} aria-pressed={paused} aria-label={paused ? 'Resume ambient animation' : 'Pause ambient animation'}><span className="motion-icon" aria-hidden="true">{paused ? '▷' : 'Ⅱ'}</span>{paused ? 'RESUME MOTION' : 'PAUSE MOTION'}</button></aside>
