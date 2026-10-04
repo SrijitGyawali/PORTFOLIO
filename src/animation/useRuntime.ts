@@ -15,11 +15,20 @@ function getTune() {
       speed: 0.22, acceleration: 0.85, smoothness: 0.16,
       multiplier: 1.15, maxDelta: 1800, stopThreshold: 0.12,
     })
-    tune.scrollDesktopMode = window.matchMedia('(prefers-reduced-motion: reduce), (pointer: coarse)').matches ? 'default' : 'smooth'
+    // Start native; useRuntime starts the engine and enables smooth mode once the page is still.
+    tune.scrollDesktopMode = 'default'
     tune.scrollMobileMode = 'default'
-    tune.start(60)
   }
   return tune
+}
+
+let tuneStarted = false
+/** start() writes the engine's stored position to the page, so seed it with the real one first. */
+function startTune(engine: StringTune) {
+  if (tuneStarted) return
+  tuneStarted = true
+  engine.scrollPosition = window.scrollY
+  engine.start(60)
 }
 
 const clamp = (value: number, min = 0, max = 1) => Math.min(max, Math.max(min, value))
@@ -51,6 +60,12 @@ export function useRuntime(): void {
     let historyFrame = 0
     let modalOpen = false
     let desktopMode = ''
+    // Prerendered content can be scrolled before this effect runs. StringTune writes
+    // its own position to the page when it starts and in smooth mode, which would
+    // cancel that native scroll, so it only takes over after a short quiet period.
+    let smoothReady = false
+    let quietTimer = 0
+    let quietFrame = 0
     const isolatedDialogs = new Set<HTMLDialogElement>()
     const focusTargets = new Set<HTMLElement>()
     const previousScrollRestoration = history.scrollRestoration
@@ -159,10 +174,12 @@ export function useRuntime(): void {
       runtime.reducedMotion = motionQuery.matches
       runtime.paused = root.dataset.motion === 'paused'
       root.dataset.reducedMotion = String(motionQuery.matches)
-      const nextMode = motionQuery.matches || coarseQuery.matches || runtime.paused ? 'default' : 'smooth'
+      const nextMode = !smoothReady || motionQuery.matches || coarseQuery.matches || runtime.paused ? 'default' : 'smooth'
       if (desktopMode !== nextMode) {
+        // The first call only records native mode; writing a position here would
+        // interrupt a scroll the visitor started on the prerendered page.
+        if (desktopMode || nextMode !== 'default') engine.scrollPosition = window.scrollY
         desktopMode = nextMode
-        engine.scrollPosition = window.scrollY
         engine.scrollDesktopMode = nextMode
         syncDialogs()
       }
@@ -292,12 +309,31 @@ export function useRuntime(): void {
     dialogObserver.observe(root, { attributes: true, attributeFilter: ['data-string-scroll-mode'] })
     let mounted = true
     void document.fonts.ready.then(() => { if (mounted) queueMeasure() })
+    const armSmooth = () => {
+      window.clearTimeout(quietTimer)
+      cancelAnimationFrame(quietFrame)
+      quietTimer = window.setTimeout(() => {
+        // One frame later the main thread has the compositor's latest scroll offset.
+        quietFrame = requestAnimationFrame(() => {
+          window.removeEventListener('scroll', armSmooth)
+          startTune(engine)
+          smoothReady = true
+          measure()
+          syncMotion()
+        })
+      }, 180)
+    }
+    window.addEventListener('scroll', armSmooth, { passive: true })
+    armSmooth()
     syncMotion()
     onVisibility()
     measure()
 
     return () => {
       mounted = false
+      window.clearTimeout(quietTimer)
+      cancelAnimationFrame(quietFrame)
+      window.removeEventListener('scroll', armSmooth)
       if (measureFrame) cancelAnimationFrame(measureFrame)
       if (navigateFrame) cancelAnimationFrame(navigateFrame)
       if (historyFrame) cancelAnimationFrame(historyFrame)
