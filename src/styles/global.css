@@ -180,4 +180,18 @@
   .social-links a:hover { color: var(--signal); }
   .contact footer { border-top: 1px solid var(--line); display: flex; gap: 30px; justify-content: space-between; padding-block: 25px 90px; color: var(--muted); font: 8px/1.5 var(--mono); letter-spacing: .035em; }
   .contact footer > a:hover { color: var(--paper); }
+  .experience-controls { position: fixed; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; z-index: 25; padding: 14px var(--gutter) 18px; background: linear-gradient(transparent,#060708eb); pointer-events: none; }
+  .chapter-readout { font: 8px var(--mono); color: #a6ada2; text-transform: uppercase; letter-spacing: .055em; }
+  .experience-controls button { pointer-events: auto; display: flex; align-items: center; gap: 8px; font: 8px var(--mono); color: #a8b29d; }
+  .motion-icon { color: var(--signal); font-size: 14px; }
+  .global-progress { position: fixed; left: 0; bottom: 0; width: 100%; height: 2px; z-index: 40; }
+  .global-progress span { display: block; height: 100%; background: var(--signal); transform: scaleX(0); transform-origin: left; }
+  .cursor { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 150; opacity: 0; will-change: transform; }
+  .cursor i { position: absolute; width: 5px; height: 5px; left: -2px; top: -2px; background: var(--signal); }
+  .cursor[data-active='true'] i { background: none; width: 12px; height: 12px; left: -6px; top: -6px; border-left: 1px solid var(--signal); border-bottom: 1px solid var(--signal); }
+  .cursor span { position: absolute; top: 15px; left: 12px; white-space: nowrap; color: var(--signal); background: #060708d9; font: 8px var(--mono); }
+  .has-cursor, .has-cursor a, .has-cursor button { cursor: none; }
+  .has-cursor input, .has-cursor textarea { cursor: text; }
+  .has-cursor dialog { cursor: auto; }
+  .has-cursor dialog a, .has-cursor dialog button { cursor: pointer; }
 }
