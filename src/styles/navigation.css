@@ -63,3 +63,42 @@
 .site-header nav .contact-nav:hover { background: #cbff7a; }
 .site-header nav .contact-nav::after, .site-header nav button::after { display: none; }
 .site-header .contact-nav span { color: inherit; font-size: 22px; margin-left: 12px; }
+
+.index-dialog {
+  width: min(1180px, calc(100% - 64px));
+  max-height: calc(100dvh - 48px);
+  padding: clamp(28px, 4vw, 54px);
+  background: #0b0e0c;
+  border: 1px solid #58634e;
+  box-shadow: 0 30px 100px #0008;
+}
+.index-header .eyebrow { color: var(--signal); font: 500 13px/1.5 var(--mono); letter-spacing: .07em; }
+.index-header .dialog-close {
+  min-height: 48px;
+  padding: 8px 12px;
+  border: 1px solid #414b3c;
+  font: 500 13px/1 var(--mono);
+  gap: 14px;
+}
+.index-header .dialog-close:hover { background: #20281b; }
+.index-dialog h2 { font-size: clamp(64px, 8vw, 106px); line-height: 1; margin-top: 28px; flex-wrap: wrap; gap: 14px 24px; }
+.index-dialog h2 span { color: #c3cbbd; font: 12px/1.5 var(--mono); padding: 6px 10px; border: 1px solid #424e39; }
+.index-intro { margin-top: 18px; color: #c4cbbf; font: 16px/1.6 var(--body); }
+.index-list { margin-top: 32px; }
+.index-list > a {
+  position: relative;
+  grid-template-columns: 40px minmax(0, 1fr) minmax(180px, 28%) 44px;
+  gap: 18px;
+  padding: 26px 12px;
+  border-color: #3b4534;
+  transition: background .2s;
+}
+.index-list > a:last-child { border-color: #3b4534; }
+.index-list > a:hover, .index-list > a:focus-visible { background: #b7ff4a09; }
+.index-number { color: var(--signal); font: 500 14px/1.5 var(--mono); }
+.index-name { font-size: clamp(36px, 4.2vw, 58px); line-height: 1.08; }
+.index-meta { color: #e1e6db; font: 500 15px/1.5 var(--body); }
+.index-meta small { margin-top: 7px; color: #b4bfac; font: 12px/1.6 var(--mono); }
+.index-arrow { display: grid; place-items: center; min-width: 44px; height: 44px; margin: 0; border: 1px solid #455239; font-size: 26px; }
+.index-note { margin-top: 28px; color: #acb7a4; font: 12px/1.7 var(--mono); letter-spacing: .015em; }
+
