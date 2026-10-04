@@ -90,6 +90,16 @@
 .detail-grid h4 { font-size: 18px; }
 .detail-award { font-size: 14px !important; }
 
+/* Notes occupy their own cell so larger technology tags never overlap them. */
+@media (min-width: 768px) {
+  .project-chapter { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); grid-template-rows: auto 1fr auto; column-gap: 5%; row-gap: 32px; }
+  .project-chapter .section-top { grid-column: 1 / -1; margin-bottom: 30px; }
+  .project-main { grid-column: 1; grid-row: 2; max-width: 100%; padding-bottom: 24px; }
+  .project-chapter .project-tech-note { grid-column: 2; grid-row: 2; position: static; align-self: end; justify-self: end; width: min(100%, 380px); margin-bottom: 24px; }
+  .project-footer { grid-column: 1 / -1; grid-row: 3; margin-top: 0; }
+  .project-award { grid-column: 1 / -1; margin-top: 0; }
+}
+
 @media (max-width: 1100px) {
   .achievement-row { grid-template-columns: .8fr 2fr 1.5fr 44px; }
   .capability-layout { gap: 5%; }
