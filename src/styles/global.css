@@ -159,4 +159,25 @@
   .worker-node { min-height: 68px; }
   .architecture-footer { display: flex; justify-content: space-between; gap: 30px; margin-top: 40px; }
   .architecture-footer .eyebrow { font-size: 8px; }
+  .about { padding-bottom: 160px; position: relative; background: linear-gradient(#060708ed,#060708b5,#060708e8); }
+  .about h2 { font: 500 clamp(77px,10.5vw,165px)/.91 var(--display); letter-spacing: -.02em; width: 77%; }
+  .about-copy { width: 36%; margin-left: auto; margin-top: -80px; position: relative; background: #060708ad; padding: 24px 0 0 24px; }
+  .about-copy > p { font-size: 14px; line-height: 1.95; margin-top: 23px; color: #bbbeba; }
+  .exploring { border-top: 1px solid var(--line); margin-top: 28px; padding-top: 24px; }
+  .exploring p { font: 9px/2 var(--mono); color: #a4ada4; margin-top: 15px; }
+  .contact { position: relative; padding-top: 0; background: linear-gradient(#060708e8,#06070899 40%,#060708c9); }
+  .availability { font: 8px/1.5 var(--mono); letter-spacing: .03em; }
+  .contact-intro { font: 10px var(--mono); margin-bottom: 23px; color: #919b8d; }
+  .contact h2 { font: 500 clamp(76px,11.7vw,185px)/.87 var(--display); letter-spacing: -.023em; }
+  .contact h2 > span { color: var(--signal); font-size: .72em; }
+  .contact-bottom { margin-top: 80px; padding-bottom: 85px; display: flex; justify-content: space-between; gap: 40px; align-items: flex-end; }
+  .email-block > a { font-size: clamp(16px,2.2vw,32px); letter-spacing: -.035em; border-bottom: 1px solid #4a5343; padding-bottom: 15px; display: flex; gap: 50px; align-items: center; }
+  .email-block > a span[aria-hidden] { color: var(--signal); }
+  .copy-email { color: var(--muted); font: 8px var(--mono); letter-spacing: .08em; padding-top: 17px; }
+  .copy-email:hover { color: var(--signal); }
+  .social-links { display: flex; gap: 40px; padding-bottom: 28px; }
+  .social-links a { display: inline-flex; gap: 25px; font: 10px var(--mono); }
+  .social-links a:hover { color: var(--signal); }
+  .contact footer { border-top: 1px solid var(--line); display: flex; gap: 30px; justify-content: space-between; padding-block: 25px 90px; color: var(--muted); font: 8px/1.5 var(--mono); letter-spacing: .035em; }
+  .contact footer > a:hover { color: var(--paper); }
 }
