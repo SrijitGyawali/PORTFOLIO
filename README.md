@@ -112,14 +112,25 @@ The build turns the React app into a page that search engines, link previews and
 | What | Where it comes from |
 |:--|:--|
 | Full page content as static HTML | `scripts/prerender.mjs` renders the same `App` at build time; the browser hydrates it |
-| Title, description, robots and author tags | [`index.html`](index.html) |
-| Open Graph and Twitter cards, with a 1200×630 image | `index.html` and [`public/og-image.jpg`](public/og-image.jpg) |
+| Title, description, canonical, robots and author tags | [`index.html`](index.html) |
+| Link-preview card for WhatsApp, LinkedIn, Facebook and X | Open Graph and Twitter tags in `index.html`, image at [`public/og.png`](public/og.png) |
 | JSON-LD structured data: `Person`, `WebSite`, `ProfilePage` and the four projects | Generated from `src/data/` |
-| `robots.txt`, `sitemap.xml` and a canonical URL | Generated when the public URL is known |
+| `robots.txt` and `sitemap.xml` | Generated from the canonical URL in `index.html` |
 | [`llms.txt`](https://llmstxt.org/) summary for AI assistants | Generated from `src/data/` |
 | A styled `404.html` marked `noindex` | Generated at build time |
 
 Project, profile and skills content lives in one place, `src/data/`, so the page, structured data and `llms.txt` never drift apart.
+
+### Link previews
+
+Social crawlers read only the static HTML and never run JavaScript, so every share tag is written directly in the `<head>` of [`index.html`](index.html), one tag per line. The image URL is absolute: `https://srijitgyawali.com.np/og.png`.
+
+![Link preview card](public/og.png)
+
+- The card is 1200×630 and about 130 kB. It shows the name and role in the site's colours and fonts, centred so a square crop on WhatsApp still shows the full name.
+- To change it, edit [`scripts/og-image.mjs`](scripts/og-image.mjs) and run `node scripts/og-image.mjs`. The script fails if the image goes over 300 kB or the name won't fit a square crop.
+- `npm run build` stops with an error if a share tag is missing, the image URL isn't a full `https://` address on the canonical domain, `og:url` doesn't match the canonical link, or the image file is missing.
+- Platforms cache previews. After changing the card, refresh it with the [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) and the [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/). WhatsApp picks up changes when the link is shared again in a new chat.
 
 ## Accessibility
 
@@ -158,20 +169,20 @@ Then open [http://localhost:5173](http://localhost:5173).
 
 `npm run build` produces a plain static folder, `dist/`. There are no API keys or servers to set up.
 
-The build needs to know the site's public address to write the canonical URL, the Open Graph image URL and the sitemap. On Vercel and Netlify it picks this up automatically. Anywhere else, set `SITE_URL` (for example `SITE_URL=https://example.com npm run build`). Without it, the site still builds and works, but those tags are left out rather than guessed.
+The public address, `https://srijitgyawali.com.np/`, is written in `index.html` (the canonical link, `og:url` and the image URLs). The sitemap, `robots.txt`, structured data and `llms.txt` read it from there. If the domain changes, update those lines in `index.html`; the build checks they still agree.
 
-**Vercel.** Import the repository at [vercel.com/new](https://vercel.com/new). Vercel detects Vite and uses `npm run build` with `dist` as the output folder. The production domain (including a custom domain, once added) is used as the site URL.
+**Vercel.** Import the repository at [vercel.com/new](https://vercel.com/new). Vercel detects Vite and uses `npm run build` with `dist` as the output folder. Add `srijitgyawali.com.np` under *Settings → Domains*.
 
 **Netlify.** Choose *Add new site → Import an existing project*, set the build command to `npm run build` and the publish directory to `dist`.
 
-**GitHub Pages.** Pages serves this repo from `/PORTFOLIO/`. Setting `SITE_URL` to that address also sets the base path:
+**GitHub Pages.** With the custom domain set under *Settings → Pages*, the site is served from the root, so a normal `npm run build` works. Without a custom domain, Pages serves this repo from `/PORTFOLIO/`, so build with that base path:
 
 ```bash
-SITE_URL=https://srijitgyawali.github.io/PORTFOLIO/ npm run build
+npm run build -- --base=/PORTFOLIO/
 npx gh-pages -d dist
 ```
 
-Then, under *Settings → Pages*, set the source to the `gh-pages` branch. If you run the build in Git Bash on Windows, put `MSYS_NO_PATHCONV=1` in front of it so the path isn't rewritten. Crawlers only read `robots.txt` at a domain's root, so on a project page like this one, submit `sitemap.xml` in Google Search Console instead.
+Then set the Pages source to the `gh-pages` branch. In Git Bash on Windows, put `MSYS_NO_PATHCONV=1` in front of the build so the path isn't rewritten.
 
 **After the first deploy,** add the site to [Google Search Console](https://search.google.com/search-console) and [Bing Webmaster Tools](https://www.bing.com/webmasters), submit `sitemap.xml`, and check the structured data with Google's [Rich Results Test](https://search.google.com/test/rich-results).
 
@@ -184,7 +195,8 @@ Then, under *Settings → Pages*, set the source to the `gh-pages` branch. If yo
 | Capability tabs and skills | [`src/data/capabilities.ts`](src/data/capabilities.ts) |
 | About text | `summary` in [`src/data/profile.ts`](src/data/profile.ts) |
 | Hero and proof of work text | [`src/App.tsx`](src/App.tsx) |
-| Page title, description and social text | [`index.html`](index.html) |
+| Page title, description and link-preview text | [`index.html`](index.html) |
+| Link-preview image | [`scripts/og-image.mjs`](scripts/og-image.mjs), then run `node scripts/og-image.mjs` |
 | Colours, fonts, spacing | [`src/styles/global.css`](src/styles/global.css) (design tokens are at the top) |
 
 ## Project structure
