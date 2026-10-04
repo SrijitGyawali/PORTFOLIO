@@ -40,7 +40,7 @@ Project descriptions stick to what has been built. There are no invented metrics
 | 08 | **The engineer** | A short bio and what Srijit is exploring right now. |
 | 09 | **Contact** | Email with a copy button, GitHub and LinkedIn. |
 
-A project index (the **INDEX** button) jumps straight to any project, and the bar at the bottom always shows which chapter you're in.
+Floating corner navigation pairs the SG mark with a vertical three-line **MENU** control. A liquid curtain descends over roughly the upper 60% of the desktop viewport, revealing Home, Projects, About, and Contact in sequence, followed by GitHub and LinkedIn. Closing reverses the curtain before navigating. The menu adapts to narrow screens, respects reduced motion and motion pause, contains keyboard focus, and restores focus when dismissed. Selected Work retains a separate four-project index. The bar at the bottom shows the current chapter.
 
 ## Featured projects
 
@@ -183,7 +183,7 @@ Design intent and principles are in [`PRODUCT.md`](PRODUCT.md). The original bui
 ## Testing
 
 - **12 unit tests** check that the 3D formations are valid and deterministic, that scroll motion reverses exactly, and that text keeps full contrast at every scroll position.
-- **23 browser tests** cover the project dialogs, keyboard navigation, the project index, scroll and history behaviour, motion pause, reduced motion, layouts down to 320px, copying the email address, and what happens when WebGL or the 3D code fails to load.
+- **29 browser checks across Chrome and WebKit** cover project dialogs, the compact curtain menu and interrupted closing, keyboard focus, scroll and history behaviour, motion pause, reduced motion, readable layouts down to 320px, desktop panel separation, email copying, and WebGL failures.
 
 WebKit tests use Playwright's WebKit engine, which is close to Safari but not the same as testing on a real iPhone. Firefox tests are optional: run `npx playwright install firefox` and then `npm run test:browser:firefox`.
 
