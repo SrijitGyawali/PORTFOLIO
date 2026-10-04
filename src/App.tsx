@@ -2,7 +2,7 @@ import { lazy, Suspense, useRef, useState } from 'react'
 import { useRuntime } from './animation/useRuntime'
 import { useChoreography } from './animation/useChoreography'
 import { runtime, sceneSections } from './animation/runtime'
-import { Navigation, ProjectIndex } from './components/Navigation'
+import { Navigation, NavigationMenu, ProjectIndex } from './components/Navigation'
 import Cursor from './components/Cursor'
 import Capabilities from './components/Capabilities'
 import Architecture from './components/Architecture'
@@ -22,6 +22,7 @@ function NameLine({ children }: { children: string }) {
 export default function App() {
   const root = useRef<HTMLDivElement>(null)
   const [indexOpen, setIndexOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const [selected, setSelected] = useState<Project | null>(null)
   const [paused, setPaused] = useState(false)
   useRuntime()
@@ -38,7 +39,7 @@ export default function App() {
     <div className="world-fallback" aria-hidden="true" />
     <WorldBoundary><Suspense fallback={null}><World /></Suspense></WorldBoundary>
     <div className="ambient-grain" aria-hidden="true" />
-    <Navigation onIndex={() => setIndexOpen(true)} />
+    <Navigation onIndex={() => setMenuOpen(true)} open={menuOpen} />
     <main>
       <section id="home" className="hero section-shell" aria-labelledby="hero-title">
         <div className="hero-topline"><span className="eyebrow"><i className="signal-square" /> INSIDE THE RUNTIME</span><span className="eyebrow hero-edition">AN EXPLORATION OF SYSTEMS & SELF</span></div>
@@ -78,6 +79,7 @@ export default function App() {
     </main>
     <aside className="experience-controls" aria-label="Experience controls"><span className="chapter-readout" data-current-chapter>00 / INITIALIZATION</span><button onClick={toggleMotion} aria-pressed={paused} aria-label={paused ? 'Resume ambient animation' : 'Pause ambient animation'}><span className="motion-icon" aria-hidden="true">{paused ? '▷' : 'Ⅱ'}</span>{paused ? 'RESUME MOTION' : 'PAUSE MOTION'}</button></aside>
     <div className="global-progress" aria-hidden="true"><span data-global-progress /></div>
+    <NavigationMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
     <ProjectIndex open={indexOpen} onClose={() => setIndexOpen(false)} />
     <ProjectDetail project={selected} onClose={() => setSelected(null)} />
     <Cursor />
