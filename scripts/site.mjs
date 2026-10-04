@@ -1,20 +1,13 @@
 /**
- * Resolves where the site will be served. Absolute URLs (canonical, Open Graph
- * image, sitemap) are written only when the public address is known, so a
- * build never points search engines at a guessed domain.
+ * Resolves the path the site is served from. The public address itself lives
+ * in index.html (canonical link and og:url), so it is fixed in static HTML.
  *
- * Order: SITE_URL, then Vercel's production domain, then Netlify's site URL.
- * The base path comes from --base=, BASE_PATH, or the SITE_URL path.
+ * The base path comes from --base= or BASE_PATH, for hosting under a sub-path
+ * such as https://user.github.io/PORTFOLIO/. It defaults to the domain root.
  */
 export function resolveSite(args = [], env = {}) {
-  const raw = env.SITE_URL
-    || (env.VERCEL_PROJECT_PRODUCTION_URL && `https://${env.VERCEL_PROJECT_PRODUCTION_URL}`)
-    || (env.NETLIFY === 'true' && env.URL)
-    || ''
-  const url = raw ? new URL(raw.endsWith('/') ? raw : `${raw}/`) : undefined
   const flag = args.find(arg => arg.startsWith('--base='))?.slice('--base='.length)
-  const base = slashes(flag || env.BASE_PATH || url?.pathname || '/')
-  return { base, url: url?.href }
+  return { base: slashes(flag || env.BASE_PATH || '/') }
 }
 
 function slashes(path) {

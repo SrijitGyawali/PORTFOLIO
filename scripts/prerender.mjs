@@ -1,6 +1,6 @@
 // Turns the client build into a crawlable static page and writes the SEO files
 // that search engines, link previews and AI assistants read.
-import { readdir, readFile, writeFile } from 'node:fs/promises'
+import { readdir, readFile, stat, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
@@ -14,10 +14,14 @@ const knowsAbout = [
 const entities = { amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'" }
 const decode = text => text.replace(/&(amp|lt|gt|quot|#39);/g, (_, name) => entities[name])
 
-export async function prerender({ base, url }) {
+export async function prerender({ base }) {
   const entry = pathToFileURL(resolve('dist-ssr/entry-server.js')).href
   const { render, profile, projects, systems } = await import(entry)
   const template = await readFile('dist/index.html', 'utf8')
+  // index.html is the single source for the public address and the share card.
+  const url = template.match(/<link rel="canonical" href="(https:\/\/[^"]+\/)"/)?.[1]
+  if (!url) throw new Error('index.html needs <link rel="canonical" href="https://…/"> with a trailing slash')
+  await checkShareCard(template, url)
   const title = decode(template.match(/<title>([^<]*)<\/title>/)[1])
   const description = decode(template.match(/<meta name="description" content="([^"]*)"/)[1])
   const today = new Date().toISOString().slice(0, 10)
@@ -29,13 +33,6 @@ export async function prerender({ base, url }) {
   const head = [
     // The hero name is the largest paint; fetch its face before CSS discovers it.
     displayFont && `<link rel="preload" href="${base}assets/${displayFont}" as="font" type="font/woff2" crossorigin />`,
-    url && `<link rel="canonical" href="${url}" />`,
-    url && `<meta property="og:url" content="${url}" />`,
-    url && `<meta property="og:image" content="${url}og-image.jpg" />`,
-    url && '<meta property="og:image:width" content="1200" />',
-    url && '<meta property="og:image:height" content="630" />',
-    url && `<meta property="og:image:alt" content="${profile.name}, ${profile.role}: Inside the Runtime portfolio" />`,
-    url && `<meta name="twitter:image" content="${url}og-image.jpg" />`,
     `<script type="application/ld+json">${JSON.stringify(graph).replace(/</g, '\\u003c')}</script>`,
   ].filter(Boolean).map(line => `    ${line}\n`).join('')
 
@@ -44,15 +41,8 @@ export async function prerender({ base, url }) {
   const page = template.replace('  </head>', `${head}  </head>`).replace(root, `<div id="root">${render()}</div>`)
   await writeFile('dist/index.html', page)
 
-  const absolute = path => url ? new URL(path, url).href : `${base}${path}`
-  await writeFile('dist/robots.txt', [
-    'User-agent: *',
-    'Allow: /',
-    ...(url ? ['', `Sitemap: ${absolute('sitemap.xml')}`] : []),
-    '',
-  ].join('\n'))
-  if (url) {
-    await writeFile('dist/sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
+  await writeFile('dist/robots.txt', ['User-agent: *', 'Allow: /', '', `Sitemap: ${new URL('sitemap.xml', url).href}`, ''].join('\n'))
+  await writeFile('dist/sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>${url}</loc>
@@ -62,11 +52,30 @@ export async function prerender({ base, url }) {
   </url>
 </urlset>
 `)
-  }
   await writeFile('dist/llms.txt', llms({ url, profile, projects, systems, projectName }))
   await writeFile('dist/404.html', notFound({ base, profile, displayFont }))
 
-  console.log(`prerendered ${url ?? `${base} (set SITE_URL to add canonical, Open Graph image and sitemap)`}`)
+  console.log(`prerendered ${url} (base ${base})`)
+}
+
+/** Social crawlers read only the static <head>; fail the build rather than ship a broken preview. */
+async function checkShareCard(template, url) {
+  const meta = key => template.match(new RegExp(`<meta (?:property|name)="${key}" content="([^"]*)"`))?.[1]
+  const required = ['og:title', 'og:description', 'og:image', 'og:image:width', 'og:image:height', 'og:image:alt', 'og:url',
+    'og:type', 'og:site_name', 'twitter:card', 'twitter:title', 'twitter:description', 'twitter:image']
+  const missing = required.filter(key => !meta(key))
+  const problems = missing.length ? [`missing ${missing.join(', ')}`] : []
+  const image = meta('og:image') ?? ''
+  if (!image.startsWith(url)) problems.push(`og:image must be a full URL on ${url}, got "${image}"`)
+  if (meta('twitter:image') !== image) problems.push('twitter:image must match og:image')
+  if (meta('og:url') !== url) problems.push(`og:url must equal the canonical URL ${url}`)
+  if (meta('og:image:width') !== '1200' || meta('og:image:height') !== '630') problems.push('og:image must be declared as 1200x630')
+  if (meta('twitter:card') !== 'summary_large_image') problems.push('twitter:card must be summary_large_image')
+  if (image.startsWith(url)) {
+    const file = `dist/${image.slice(url.length)}`
+    await stat(file).catch(() => problems.push(`${file} does not exist; add it to public/`))
+  }
+  if (problems.length) throw new Error(`Share card check failed:\n- ${problems.join('\n- ')}`)
 }
 
 function structuredData({ url, title, description, today, profile, projects, projectName }) {
