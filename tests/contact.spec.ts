@@ -24,10 +24,10 @@ test('copy success and social links use the supplied contact information', async
 
 test('modal controls and narrow pointer layouts keep a visible native cursor', async ({ page }) => {
   await page.goto('/')
-  await page.getByRole('navigation').getByRole('button', { name: 'INDEX' }).click()
-  await expect(page.getByRole('button', { name: 'Close project index' })).toHaveCSS('cursor', 'pointer')
+  await page.getByRole('navigation').getByRole('button', { name: 'MENU' }).click()
+  await expect(page.getByRole('button', { name: 'Close navigation menu' })).toHaveCSS('cursor', 'pointer')
   await page.keyboard.press('Escape')
   await page.setViewportSize({ width: 700, height: 900 })
   await expect(page.locator('html')).not.toHaveClass(/has-cursor/)
-  await expect(page.getByRole('navigation').getByRole('button', { name: 'INDEX' })).toHaveCSS('cursor', 'pointer')
+  await expect(page.getByRole('navigation').getByRole('button', { name: 'MENU' })).toHaveCSS('cursor', 'pointer')
 })

@@ -11,7 +11,7 @@ test('engine compatibility: scroll chapters, dialogs and fallback preserve the s
     await page.locator(`#${id}`).evaluate(node => node.scrollIntoView({ behavior: 'instant' }))
     await expect(page.locator('html')).toHaveAttribute('data-chapter', id)
   }
-  await page.getByRole('navigation').getByRole('button', { name: 'INDEX' }).click()
+  await page.getByRole('button', { name: 'OPEN PROJECT INDEX' }).click()
   await page.getByRole('dialog').locator('a[href="#smartmarket"]').click()
   await page.locator('#smartmarket').getByRole('button').click()
   const dialog = page.getByRole('dialog')
@@ -31,7 +31,7 @@ test('engine compatibility: 320px layout keeps project titles readable', async (
     expect(await title.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true)
   }
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
-  await page.getByRole('navigation').getByRole('button', { name: 'INDEX' }).click()
+  await page.getByRole('navigation').getByRole('button', { name: 'MENU' }).click()
   await expect(page.getByRole('dialog')).toBeVisible()
   expect(await page.getByRole('dialog').evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true)
   await page.keyboard.press('Escape')

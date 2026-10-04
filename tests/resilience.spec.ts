@@ -10,7 +10,7 @@ test('a failed optional world module leaves the portfolio and project navigation
   await expect.poll(() => rejectedWorld).toBe(true)
   await expect(page.getByRole('heading', { name: 'Srijit Gyawali', exact: true })).toBeVisible()
   await expect(page.locator('canvas')).toHaveCount(0)
-  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('button', { name: 'INDEX' }).click()
+  await page.getByRole('button', { name: 'OPEN PROJECT INDEX' }).click()
   const index = page.getByRole('dialog')
   await expect(index).toBeVisible()
   await index.locator('a[href="#cex"]').click()

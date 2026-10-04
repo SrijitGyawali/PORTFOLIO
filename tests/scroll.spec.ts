@@ -39,13 +39,17 @@ test('desktop wheel eases promptly, updates chapter state, and reverses without 
 test('chapter anchors and index share the controller and preserve back/forward history', async ({ page }) => {
   await page.goto('/')
   const nav = page.getByRole('navigation', { name: 'Main navigation' })
-  await nav.getByRole('link', { name: 'WORK', exact: true }).click()
+  await nav.getByRole('button', { name: 'MENU' }).click()
+  await page.locator('.menu-sections a[href="#verix"]').click()
   await expect(page).toHaveURL(/#verix$/)
   await expect.poll(() => page.locator('#verix').evaluate(node => node.getBoundingClientRect().top)).toBeCloseTo(88, -1)
-  await expect(nav.getByRole('link', { name: 'WORK', exact: true })).toHaveAttribute('aria-current', 'location')
+  await expect(page.locator('.menu-sections a[href="#verix"]')).toHaveAttribute('aria-current', 'location')
 
-  await nav.getByRole('button', { name: 'INDEX' }).click()
+  await page.getByRole('button', { name: 'OPEN PROJECT INDEX' }).click()
   await expect(page.locator('html')).toHaveAttribute('data-string-scroll-mode', 'disable')
+  // Opening the work section's index scrolls its trigger into view. Back should
+  // restore that actual position, even though the previous hash remains #verix.
+  const indexOrigin = await page.evaluate(() => window.scrollY)
   await page.getByRole('dialog').locator('a[href="#cex"]').click()
   await expect(page.getByRole('dialog')).not.toBeVisible()
   await expect(page).toHaveURL(/#cex$/)
@@ -54,7 +58,7 @@ test('chapter anchors and index share the controller and preserve back/forward h
 
   await page.goBack()
   await expect(page).toHaveURL(/#verix$/)
-  await expect(page.locator('html')).toHaveAttribute('data-chapter', 'verix')
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeCloseTo(indexOrigin, 0)
   await page.goForward()
   await expect(page).toHaveURL(/#cex$/)
   await expect(page.locator('html')).toHaveAttribute('data-chapter', 'cex')
@@ -88,7 +92,8 @@ test('keyboard navigation works and reduced motion switches to native scrolling'
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(3)
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await expect(page.locator('html')).toHaveAttribute('data-string-scroll-mode', 'default')
-  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'ABOUT', exact: true }).click()
+  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('button', { name: 'MENU' }).click()
+  await page.locator('.menu-sections a[href="#about"]').click()
   await expect(page.locator('html')).toHaveAttribute('data-chapter', 'about')
 })
 

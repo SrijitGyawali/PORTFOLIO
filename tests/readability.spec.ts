@@ -31,9 +31,23 @@ for (const width of [320, 390, 1440]) {
       expect(metrics.left, selector).toBeGreaterThanOrEqual(0)
       expect(metrics.right, selector).toBeLessThanOrEqual(width)
     }
-    const index = page.getByRole('navigation').getByRole('button', { name: 'INDEX' })
+    const index = page.getByRole('navigation').getByRole('button', { name: 'MENU' })
     await expect(index).toHaveCSS('font-size', '14px')
     expect((await index.boundingBox())!.height).toBeGreaterThanOrEqual(44)
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
   })
 }
+
+test('engineering notes stay separate from technical panels on desktop', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  await page.evaluate(() => document.fonts.ready)
+  for (const width of [1024, 1440]) {
+    await page.setViewportSize({ width, height: 1000 })
+    for (const id of ['verix', 'cex', 'tapguard', 'smartmarket']) {
+      const chapter = page.locator(`#${id}`)
+      const gap = await chapter.evaluate(node => node.querySelector('.project-footer')!.getBoundingClientRect().top - node.querySelector('.project-tech-note')!.getBoundingClientRect().bottom)
+      expect(gap, `${id} at ${width}px`).toBeGreaterThanOrEqual(24)
+    }
+  }
+})
