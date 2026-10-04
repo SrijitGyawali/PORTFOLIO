@@ -237,3 +237,27 @@
 
 @keyframes packet-vertical { 0% { transform: translateY(0); } 70%,100% { transform: translateY(95px); } }
 @keyframes packet-horizontal { 0% { transform: translateX(0); } 70%,100% { transform: translateX(95px); } }
+
+@layer responsive {
+  @media (min-width: 1800px) { .hero { min-height: 1000px; } .hero-name-wrap { margin-top: 60px; } }
+  @media (max-width: 1100px) {
+    .hero { min-height: 800px; }
+    .hero h1 { font-size: 16.6vw; }
+    .hero-name-wrap { margin-top: 65px; }
+    .hero-edition { font-size: 7px; }
+    .world-caption { width: 32%; bottom: 30%; }
+    .coordinates { display: none; }
+    .achievement-row { grid-template-columns: .9fr 2fr 1.4fr 25px; gap: 15px; }
+    .achievement-event h3, .achievement-result strong { font-size: 31px; }
+    .record-label { font-size: 7px; }
+    .capability-layout { gap: 8%; }
+    .project-chapter { min-height: 930px; }
+    .project-tech-note { bottom: 34%; }
+    .project-title { font-size: 13.5vw; }
+    .project-tapguard .project-title, .project-smartmarket .project-title { font-size: 10.9vw; }
+    .architecture-ingress { grid-template-columns: 1fr 40px 1.3fr 40px 1.3fr; }
+    .architecture-branches { gap: 25px; }
+    .about-copy { margin-top: -35px; width: 44%; }
+    .index-list > a { grid-template-columns: 30px 1fr 180px 25px; gap: 12px; }
+  }
+}
