@@ -102,3 +102,41 @@
 .index-arrow { display: grid; place-items: center; min-width: 44px; height: 44px; margin: 0; border: 1px solid #455239; font-size: 26px; }
 .index-note { margin-top: 28px; color: #acb7a4; font: 12px/1.7 var(--mono); letter-spacing: .015em; }
 
+@media (max-width: 1050px) {
+  .header-identity { display: none; }
+  .site-header nav { gap: 16px; }
+  .index-list > a { grid-template-columns: 30px minmax(0, 1fr) minmax(170px, 29%) 44px; gap: 14px; }
+}
+@media (max-width: 767px) {
+  .site-header { height: 76px; gap: 12px; padding-inline: 16px; }
+  .site-header::before { left: 16px; width: 44px; }
+  .wordmark { flex-basis: 44px; width: 44px; height: 44px; font-size: 31px; }
+  .site-header nav { gap: 8px; font-size: 14px; }
+  .site-header nav > a:not(.contact-nav) { display: none; }
+  .site-header nav a, .site-header nav button { min-height: 44px; }
+  .site-header nav button { padding-inline: 11px; }
+  .site-header .index-icon { font-size: 20px; margin-left: 7px; }
+  .site-header nav a.contact-nav { display: inline-flex; font-size: 13px; margin: 0; padding-inline: 11px; }
+  .site-header .contact-nav span { font-size: 20px; margin-left: 7px; }
+  .index-dialog { width: calc(100% - 24px); max-height: calc(100dvh - 24px); padding: 22px; }
+  .index-header { gap: 10px; }
+  .index-header .eyebrow { font-size: 12px; }
+  .index-header .dialog-close { min-height: 44px; font-size: 12px; gap: 8px; padding-inline: 8px; }
+  .index-dialog h2 { font-size: 60px; margin-top: 25px; gap: 12px; }
+  .index-dialog h2 span { font-size: 11px; }
+  .index-intro { font-size: 16px; margin-top: 16px; }
+  .index-list { margin-top: 25px; }
+  .index-list > a { grid-template-columns: 22px minmax(0, 1fr) 36px; gap: 10px; padding: 24px 0; }
+  .index-number { align-self: start; padding-top: 7px; font-size: 12px; }
+  .index-name { font-size: clamp(33px, 8.4vw, 48px); grid-column: 2; grid-row: 1; }
+  .index-meta { grid-column: 2 / -1; grid-row: 2; font-size: 15px; margin-top: 2px; }
+  .index-meta small { font-size: 12px; margin-top: 6px; }
+  .index-arrow { grid-column: 3; grid-row: 1; width: 36px; min-width: 36px; height: 36px; margin: 0; font-size: 23px; }
+  .index-note { font-size: 11px; line-height: 1.8; margin-top: 24px; }
+}
+@media (max-width: 370px) {
+  .index-dialog { padding: 18px; }
+  .index-dialog h2 { font-size: 54px; }
+  .index-list > a { grid-template-columns: 18px minmax(0, 1fr) 32px; gap: 8px; }
+  .index-arrow { min-width: 32px; width: 32px; height: 34px; }
+}
