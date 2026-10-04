@@ -101,3 +101,81 @@
   .email-block > a { width: fit-content; max-width: 100%; }
   .about-copy { width: 55%; }
 }
+
+@media (max-width: 767px) {
+  :root { --label-size: 12px; --text-size: 17px; }
+  .hero-topline .eyebrow, .hero-role .eyebrow { font-size: 12px; }
+  .hero-role p { font-size: 12px; line-height: 1.9; letter-spacing: 0; max-width: 34ch; }
+  .hero-bottom { grid-template-columns: 1fr; gap: 28px; padding-block: 90px 64px; }
+  .hero-bottom > p { justify-self: start; font-size: 20px; }
+  .scroll-cue { font-size: 12px; gap: 16px; }
+  .scroll-cue small { font-size: 11px; max-width: 210px; }
+  .world-caption { display: none; }
+  .section-top { flex-wrap: wrap; gap: 12px; }
+  .section-top .eyebrow { font-size: 12px; }
+  .section-top > .eyebrow:last-child:not(:first-child) { font-size: 12px; text-align: left; max-width: 100%; }
+  .achievement-row { grid-template-columns: minmax(0, 1fr) 44px; gap: 18px; padding-block: 28px; }
+  .record-label { font-size: 12px; }
+  .achievement-event p { font-size: 12px; max-width: 100%; }
+  .achievement-result { flex-wrap: wrap; gap: 10px; }
+  .achievement-result strong { font-size: 32px; }
+  .achievement-result span { font-size: 12px; max-width: 100%; }
+  .achievement-row > a { margin-top: 0; grid-row: 2; }
+  .capability-tabs { grid-template-columns: 1fr 1.5fr .8fr; }
+  .capability-tabs button { font-size: clamp(22px, 5.6vw, 32px); gap: 6px; }
+  .capability-tabs button span { display: none; }
+  .capability-panel { padding: 24px 20px; min-height: 0; }
+  .capability-panel h3 { font-size: 34px; }
+  .capability-panel > p { font-size: 17px; }
+  .capability-panel ul { grid-template-columns: 1fr; gap: 0; margin-top: 25px; }
+  .capability-panel li { font-size: 16px; padding-block: 12px; }
+  .work-intro .text-link { font-size: 13px; }
+  .project-chapter { min-height: 0; padding-bottom: 64px; }
+  .project-number, .scene-counter { font-size: 12px; }
+  .scene-counter { top: 116px; }
+  .project-statement { font-size: 30px; max-width: 100%; }
+  .project-description { font-size: 17px; line-height: 1.85; max-width: 100%; background: #060708bc; }
+  .project-open { font-size: 13px; gap: 32px; }
+  .project-tech-note { margin: 88px 0 0; width: 100%; padding: 22px; background: #0d120ef5; }
+  .project-tech-note .eyebrow, .project-stack .eyebrow { font-size: 12px; }
+  .project-tech-note p { font-size: 16px; }
+  .project-footer { grid-template-columns: minmax(0, 1fr); gap: 30px; margin-top: 28px; padding: 24px 20px; }
+  .project-stack li { font-size: 15px; padding: 7px 10px; }
+  .project-flow { flex-direction: column; gap: 0; font-size: 16px; margin-top: 10px; }
+  .project-flow li { padding-block: 12px; border-bottom: 1px solid #293829; gap: 15px; }
+  .project-flow li:last-child { border-bottom: 0; padding-bottom: 0; }
+  .project-flow .flow-step { font-size: 12px; }
+  .project-flow i { margin-left: auto; rotate: 90deg; }
+  .project-award { font-size: 12px; align-items: flex-start; }
+  .systems-heading { grid-template-columns: minmax(0, 1fr); }
+  .systems-heading > p { font-size: 17px; }
+  .architecture-ingress { width: 100%; max-width: 370px; }
+  .arch-node, .request-node { min-height: 80px; font-size: 15px; padding: 20px 12px; }
+  .arch-node small { font-size: 12px; }
+  .architecture-branches { grid-template-columns: minmax(0, 1fr); gap: 22px; margin-top: 20px; padding-top: 0; }
+  .architecture-branches::before, .architecture-branches::after { display: none; }
+  .architecture-branches .flow-line { height: 25px; }
+  .arch-branch > p { font-size: 15px; }
+  .architecture-footer .eyebrow { font-size: 12px; }
+  .about-copy { margin: 36px 0 0; width: 100%; padding: 26px 20px; }
+  .about-copy .eyebrow { font-size: 12px; }
+  .about-copy > p { font-size: 18px; line-height: 1.85; }
+  .exploring li { font-size: 16px; }
+  .availability { font-size: 11px; max-width: 100%; text-align: left; }
+  .contact-intro { font-size: 13px; }
+  .contact-bottom { margin-top: 40px; gap: 30px; padding-bottom: 40px; }
+  .email-block > a { width: 100%; font-size: clamp(18px, 4.8vw, 27px); gap: 12px; }
+  .copy-email { font-size: 13px; }
+  .social-links { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .social-links a { font-size: 15px; gap: 14px; padding: 14px 16px; }
+  .contact footer { grid-template-columns: 1fr; gap: 14px; font-size: 12px; padding-bottom: 96px; }
+  .contact footer > span:nth-child(2) { text-align: left; }
+  .experience-controls { padding-block: 4px; gap: 12px; }
+  .chapter-readout, .experience-controls button { font-size: 10px; letter-spacing: 0; }
+  .motion-icon { font-size: 17px; }
+  .project-dialog { padding: 22px 20px; }
+  .dialog-header .eyebrow { font-size: 12px; }
+  .project-dialog .dialog-close { font-size: 12px; gap: 8px; }
+  .detail-stack, .detail-flow { font-size: 14px; }
+  .detail-grid p, .dialog-body > p { font-size: 16px; }
+}
