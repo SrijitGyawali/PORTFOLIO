@@ -40,7 +40,7 @@ export function useRuntime(): void {
     }))
     const progressNodes = Array.from(document.querySelectorAll<HTMLElement>('[data-global-progress]'))
     const chapterNodes = Array.from(document.querySelectorAll<HTMLElement>('[data-current-chapter]'))
-    const navigationLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('.site-header a[href^="#"]'))
+    const navigationLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('.site-header a[href^="#"], .menu-sections a[href^="#"]'))
     let range = 1
     let viewport = window.innerHeight
     let previousScroll = engine.scrollPosition
@@ -199,19 +199,29 @@ export function useRuntime(): void {
       })
     }
 
+    const visitSection = (id: string) => {
+      const hash = `#${id}`
+      history.replaceState({ ...history.state, portfolioScroll: window.scrollY }, '')
+      if (hash !== location.hash) history.pushState({ portfolioSection: id }, '', hash)
+      navigate(id)
+    }
+    const onMenuNavigate = (event: Event) => {
+      const id = (event as CustomEvent<unknown>).detail
+      if (typeof id === 'string' && document.getElementById(id)) visitSection(id)
+    }
     const onAnchor = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
       const anchor = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[href]') : null
       if (!anchor || anchor.hasAttribute('download') || anchor.target && anchor.target !== '_self') return
+      // Menu links wait until the reverse curtain finishes before navigating.
+      if (anchor.closest('[data-liquid-menu]')) return
       const url = new URL(anchor.href, location.href)
       if (url.origin !== location.origin || url.pathname !== location.pathname || url.search !== location.search || !url.hash) return
       let id: string
       try { id = decodeURIComponent(url.hash.slice(1)) } catch { return }
       if (!document.getElementById(id)) return
       event.preventDefault()
-      history.replaceState({ ...history.state, portfolioScroll: window.scrollY }, '')
-      if (url.hash !== location.hash) history.pushState({ portfolioSection: id }, '', url.hash)
-      navigate(id)
+      visitSection(id)
     }
 
     const restoreHistory = () => {
@@ -259,6 +269,7 @@ export function useRuntime(): void {
     motionQuery.addEventListener('change', syncMotion)
     coarseQuery.addEventListener('change', syncMotion)
     document.addEventListener('click', onAnchor, true)
+    document.addEventListener('portfolio:menu-navigate', onMenuNavigate)
     document.addEventListener('keydown', preserveControlKeys)
     window.addEventListener('popstate', restoreHistory)
     window.addEventListener('hashchange', restoreHistory)
@@ -303,6 +314,7 @@ export function useRuntime(): void {
       motionQuery.removeEventListener('change', syncMotion)
       coarseQuery.removeEventListener('change', syncMotion)
       document.removeEventListener('click', onAnchor, true)
+      document.removeEventListener('portfolio:menu-navigate', onMenuNavigate)
       document.removeEventListener('keydown', preserveControlKeys)
       window.removeEventListener('popstate', restoreHistory)
       window.removeEventListener('hashchange', restoreHistory)
