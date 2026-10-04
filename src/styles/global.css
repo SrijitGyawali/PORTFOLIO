@@ -31,3 +31,26 @@
   .text-link span { font-size: 22px; transition: transform .25s; }
   .text-link:hover span { transform: translate(3px,-3px); }
 }
+
+@layer components {
+  .app { overflow: clip; }
+  .skip-link { position: fixed; left: 20px; top: -70px; z-index: 100; padding: 15px 24px; color: var(--ink); background: var(--signal); }
+  .skip-link:focus { top: 20px; }
+  .world-fallback { position: fixed; inset: 0; z-index: 0; background-image: linear-gradient(#e4ead504 1px, transparent 1px), linear-gradient(90deg,#e4ead504 1px,transparent 1px); background-size: 88px 88px; mask-image: linear-gradient(90deg,transparent 35%,#000); }
+  .webgl-world { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  .webgl-world canvas { width: 100%; height: 100%; display: block; }
+  .ambient-grain { pointer-events: none; position: fixed; inset: 0; z-index: 8; opacity: .024; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.87' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23n)' opacity='.7' d='M0 0h180v180H0z'/%3E%3C/svg%3E"); }
+  .site-header { height: 96px; position: fixed; top: 0; left: 0; width: 100%; display: flex; align-items: center; gap: 22px; padding-inline: var(--gutter); z-index: 20; background: linear-gradient(var(--ink) 5%,#060708e8 65%,#06070800); }
+  .wordmark { font: 600 31px/.9 var(--display); letter-spacing: -3px; display: flex; align-items: center; padding-right: 10px; }
+  .wordmark-g { transform: translateY(5px); }
+  .wordmark-dot { width: 5px; height: 5px; background: var(--signal); margin: 24px 0 0 5px; }
+  .header-identity { font: 10px/1.65 var(--mono); letter-spacing: .055em; }
+  .header-identity span { display: block; color: var(--muted); font-size: 8px; }
+  .site-header nav { display: flex; align-items: center; gap: 36px; margin-left: auto; font: 10px var(--mono); letter-spacing: .08em; }
+  .site-header nav a, .site-header nav button { padding-block: 10px; position: relative; }
+  .site-header nav a::after, .site-header nav button::after { content: ''; position: absolute; bottom: 2px; left: 0; width: 100%; height: 1px; background: var(--signal); transform: scaleX(0); transform-origin: left; transition: transform .25s; }
+  .site-header nav a:hover::after, .site-header nav button:hover::after { transform: scaleX(1); }
+  .index-icon { margin-left: 7px; font-size: 13px; }
+  .contact-nav { margin-left: 13px; }
+  .contact-nav span { color: var(--signal); font-size: 18px; margin-left: 12px; }
+}
