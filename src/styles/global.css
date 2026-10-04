@@ -398,4 +398,8 @@
     .detail-stack { font-size: 8px; gap: 10px; }
     .detail-flow { font-size: 8px; gap: 9px; }
   }
+  @media (max-width: 370px) { :root { --gutter: 19px; } .hero h1 { font-size: 23vw; } .hero { min-height: 730px; } .hero-role p { font-size: 6px; } .capability-tabs button { font-size: 21px; } .contact-nav { display: none; } .capability-panel li { font-size: 8px; } }
+  @media (prefers-reduced-motion: reduce) { :root { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } .hero-letter, [data-reveal] { opacity: 1 !important; transform: none !important; clip-path: none !important; } .cursor { display: none; } .has-cursor, .has-cursor a, .has-cursor button { cursor: auto; } }
+  :root[data-motion='paused'] *, :root[data-motion='paused'] *::before, :root[data-motion='paused'] *::after { animation-play-state: paused !important; }
+  @media (forced-colors: active) { .outline { color: CanvasText; -webkit-text-stroke: 0; } .webgl-world, .ambient-grain { display: none; } }
 }
