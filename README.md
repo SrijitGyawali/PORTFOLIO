@@ -98,10 +98,28 @@ Floating corner navigation pairs the SG mark with a vertical three-line **MENU**
 
 ### Performance
 
+- The production HTML is prerendered, so text appears before any JavaScript runs.
 - Three.js (about 133 kB gzipped) loads in its own chunk after the page content is on screen.
+- The hero font is preloaded so the name renders in its real face without a late swap.
 - Pixel density is capped and lowered automatically if frames stay slow.
 - Rendering pauses when the tab is hidden. When motion is paused, the scene only redraws if something changes.
 - In local testing with desktop Chrome, the median frame took 16.7 ms (about 60 fps).
+
+## Search and sharing
+
+The build turns the React app into a page that search engines, link previews and AI assistants can read without running JavaScript.
+
+| What | Where it comes from |
+|:--|:--|
+| Full page content as static HTML | `scripts/prerender.mjs` renders the same `App` at build time; the browser hydrates it |
+| Title, description, robots and author tags | [`index.html`](index.html) |
+| Open Graph and Twitter cards, with a 1200×630 image | `index.html` and [`public/og-image.jpg`](public/og-image.jpg) |
+| JSON-LD structured data: `Person`, `WebSite`, `ProfilePage` and the four projects | Generated from `src/data/` |
+| `robots.txt`, `sitemap.xml` and a canonical URL | Generated when the public URL is known |
+| [`llms.txt`](https://llmstxt.org/) summary for AI assistants | Generated from `src/data/` |
+| A styled `404.html` marked `noindex` | Generated at build time |
+
+Project, profile and skills content lives in one place, `src/data/`, so the page, structured data and `llms.txt` never drift apart.
 
 ## Accessibility
 
@@ -129,7 +147,7 @@ Then open [http://localhost:5173](http://localhost:5173).
 | Command | What it does |
 |:--|:--|
 | `npm run dev` | Starts the dev server with hot reload |
-| `npm run build` | Type-checks, then builds the static site into `dist/` |
+| `npm run build` | Type-checks, builds and prerenders the static site into `dist/` |
 | `npm run preview` | Serves the production build locally |
 | `npm run lint` | Runs ESLint |
 | `npm run typecheck` | Runs the TypeScript compiler without emitting files |
@@ -138,20 +156,24 @@ Then open [http://localhost:5173](http://localhost:5173).
 
 ## Deploy
 
-`npm run build` produces a plain static folder, `dist/`. There are no environment variables, API keys or servers to set up.
+`npm run build` produces a plain static folder, `dist/`. There are no API keys or servers to set up.
 
-**Vercel.** Import the repository at [vercel.com/new](https://vercel.com/new). Vercel detects Vite and uses `npm run build` with `dist` as the output folder.
+The build needs to know the site's public address to write the canonical URL, the Open Graph image URL and the sitemap. On Vercel and Netlify it picks this up automatically. Anywhere else, set `SITE_URL` (for example `SITE_URL=https://example.com npm run build`). Without it, the site still builds and works, but those tags are left out rather than guessed.
+
+**Vercel.** Import the repository at [vercel.com/new](https://vercel.com/new). Vercel detects Vite and uses `npm run build` with `dist` as the output folder. The production domain (including a custom domain, once added) is used as the site URL.
 
 **Netlify.** Choose *Add new site → Import an existing project*, set the build command to `npm run build` and the publish directory to `dist`.
 
-**GitHub Pages.** Pages serves this repo from `/PORTFOLIO/`, so build with that base path and publish the result:
+**GitHub Pages.** Pages serves this repo from `/PORTFOLIO/`. Setting `SITE_URL` to that address also sets the base path:
 
 ```bash
-npm run build -- --base=/PORTFOLIO/
+SITE_URL=https://srijitgyawali.github.io/PORTFOLIO/ npm run build
 npx gh-pages -d dist
 ```
 
-Then, under *Settings → Pages*, set the source to the `gh-pages` branch. If you run the build in Git Bash on Windows, put `MSYS_NO_PATHCONV=1` in front of it so the base path isn't rewritten.
+Then, under *Settings → Pages*, set the source to the `gh-pages` branch. If you run the build in Git Bash on Windows, put `MSYS_NO_PATHCONV=1` in front of it so the path isn't rewritten. Crawlers only read `robots.txt` at a domain's root, so on a project page like this one, submit `sitemap.xml` in Google Search Console instead.
+
+**After the first deploy,** add the site to [Google Search Console](https://search.google.com/search-console) and [Bing Webmaster Tools](https://www.bing.com/webmasters), submit `sitemap.xml`, and check the structured data with Google's [Rich Results Test](https://search.google.com/test/rich-results).
 
 ## Updating the content
 
@@ -159,8 +181,10 @@ Then, under *Settings → Pages*, set the source to the `gh-pages` branch. If yo
 |:--|:--|
 | Email, GitHub, LinkedIn | [`src/data/profile.ts`](src/data/profile.ts) |
 | Projects, stacks, awards, links | [`src/data/projects.ts`](src/data/projects.ts) |
-| Capability tabs and skills | [`src/components/Capabilities.tsx`](src/components/Capabilities.tsx) |
-| Hero, proof of work and about text | [`src/App.tsx`](src/App.tsx) |
+| Capability tabs and skills | [`src/data/capabilities.ts`](src/data/capabilities.ts) |
+| About text | `summary` in [`src/data/profile.ts`](src/data/profile.ts) |
+| Hero and proof of work text | [`src/App.tsx`](src/App.tsx) |
+| Page title, description and social text | [`index.html`](index.html) |
 | Colours, fonts, spacing | [`src/styles/global.css`](src/styles/global.css) (design tokens are at the top) |
 
 ## Project structure
@@ -168,12 +192,14 @@ Then, under *Settings → Pages*, set the source to the `gh-pages` branch. If yo
 ```
 src/
 ├── App.tsx              Page composition: every chapter in order
-├── main.tsx             Entry point, fonts and stylesheets
-├── data/                Profile and project content
+├── main.tsx             Entry point: hydrates the prerendered HTML, loads fonts and stylesheets
+├── entry-server.tsx     Build-time render used by the prerender step
+├── data/                Profile, project and capability content
 ├── components/          Navigation, project dialog, capabilities, architecture, contact, cursor
 ├── animation/           Scroll runtime (StringTune), scroll choreography, hero text animation
 ├── webgl/               Three.js world, procedural geometry, shaders, name sampling
 └── styles/              Design tokens, layout, readability layer, navigation, scroll motion
+scripts/                 Production build, prerender and SEO file generation
 tests/                   Playwright browser tests and a screenshot script
 docs/                    Implementation notes and README screenshots
 ```
