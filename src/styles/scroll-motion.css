@@ -1,0 +1,42 @@
+/* The shared StringTune clock supplies these values. Individual transforms
+   compose with Anime's hero assembly and CSS hover transforms. */
+[data-scroll] {
+  translate: var(--scroll-x, 0px) var(--scroll-y, 0px);
+  rotate: var(--scroll-rotate, 0deg);
+  scale: var(--scroll-scale, 1);
+  opacity: var(--scroll-opacity, 1);
+  transform-origin: 15% 60%;
+}
+[data-scroll='title'], [data-scroll='ghost'] { transform: skewY(var(--scroll-skew, 0deg)); }
+[data-scroll-active] { will-change: translate, rotate, scale; }
+[data-scroll='line'] { position: relative; border-top-color: transparent; }
+[data-scroll='line']::before {
+  content: ''; position: absolute; left: 0; right: 0; top: -1px; height: 1px;
+  background: var(--line); transform: scaleX(var(--reveal-progress, 1)); transform-origin: left;
+}
+.project-chapter { isolation: isolate; }
+.environment-word {
+  position: absolute; z-index: -1; top: 53%; left: 27%; pointer-events: none;
+  font: 600 clamp(160px, 23vw, 380px)/.8 var(--display);
+  letter-spacing: -.035em; white-space: nowrap; color: #cfe7b607;
+  -webkit-text-stroke: 1px #b5caa515;
+}
+.site-header a[aria-current='location'] { color: var(--signal); }
+.project-dialog[open], .index-dialog[open] { animation: dialog-arrive .38s cubic-bezier(.16,1,.3,1) both; }
+.index-dialog[open] .index-list > a { animation: index-arrive .6s cubic-bezier(.16,1,.3,1) both; }
+.index-list > a:nth-child(2) { animation-delay: .035s !important; }
+.index-list > a:nth-child(3) { animation-delay: .07s !important; }
+.index-list > a:nth-child(4) { animation-delay: .105s !important; }
+@keyframes dialog-arrive { from { opacity: 0; transform: translateY(20px) scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes index-arrive { from { opacity: .15; translate: -30px 20px; } to { opacity: 1; translate: 0 0; } }
+@media (max-width: 767px) {
+  .environment-word { font-size: 37vw; top: 64%; left: -4%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-scroll] { translate: none !important; rotate: none !important; scale: none !important; opacity: 1 !important; transform: none !important; will-change: auto; }
+  [data-scroll='line']::before { transform: none; }
+  .project-dialog[open], .index-dialog[open], .index-dialog[open] .index-list > a { animation: none; }
+}
+:root[data-motion='paused'] [data-scroll] { translate: none; rotate: none; scale: none; opacity: 1; transform: none; will-change: auto; }
+:root[data-motion='paused'] [data-scroll='line']::before { transform: none; }
+:root[data-motion='paused'] dialog[open], :root[data-motion='paused'] .index-dialog[open] .index-list > a { animation: none; }
