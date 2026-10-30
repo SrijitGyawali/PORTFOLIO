@@ -11,4 +11,4 @@ export const runtime = {
   visible: true,
 }
 
-export const sceneSections = ['home', 'proof', 'capabilities', 'verix', 'cex', 'tapguard', 'smartmarket', 'systems', 'about', 'contact'] as const
+export const sceneSections = ['home', 'proof', 'capabilities', 'cex', 'swiflo', 'smartmarket', 'swasthyasetu', 'systems', 'about', 'contact'] as const

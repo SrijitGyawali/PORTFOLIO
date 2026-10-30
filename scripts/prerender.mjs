@@ -4,7 +4,7 @@ import { readdir, readFile, stat, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-const names = { verix: 'Verix', cex: 'CEX', tapguard: 'TapGuard Vault', smartmarket: 'SmartMarket' }
+const names = { cex: 'CEX - Centralized Exchange', swiflo: 'Swiflo', smartmarket: 'SmartMarket', swasthyasetu: 'SwasthyaSetu' }
 const knowsAbout = [
   'Go', 'Concurrency', 'Distributed systems', 'Microservices', 'Event-driven architecture',
   'PostgreSQL', 'Redis', 'Kafka', 'gRPC', 'WebSockets',

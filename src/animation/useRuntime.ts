@@ -128,7 +128,7 @@ export function useRuntime(): void {
         root.dataset.chapter = current.id
         for (const link of navigationLinks) {
           const id = link.hash.slice(1)
-          const isCurrent = id === current.id || id === 'verix' && link.closest('.menu-sections') && active >= 3 && active <= 6
+          const isCurrent = id === current.id || id === 'projects' && link.closest('.menu-sections') && active >= 3 && active <= 6
           if (isCurrent) link.setAttribute('aria-current', 'location')
           else link.removeAttribute('aria-current')
         }

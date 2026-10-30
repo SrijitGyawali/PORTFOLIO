@@ -27,7 +27,7 @@ export function NavigationMenu({ open, onClose }: { open: boolean; onClose: () =
       <header className="menu-header"><span className="menu-brand" aria-hidden="true">SG<span>INSIDE THE RUNTIME</span></span><button className="menu-close" onClick={() => close()} aria-label="Close navigation menu" autoFocus>CLOSE<span className="menu-glyph" aria-hidden="true"><i /><i /></span></button></header>
       <h2 id="navigation-menu-title" className="sr-only">Explore the portfolio</h2>
       <nav className="menu-sections" aria-label="Portfolio sections">
-        {[['home', 'HOME'], ['verix', 'PROJECTS'], ['about', 'ABOUT'], ['contact', 'CONTACT']].map(([id, label]) => <a key={id} href={`#${id}`} data-menu-reveal onClick={event => {
+        {[['home', 'HOME'], ['projects', 'PROJECTS'], ['about', 'ABOUT'], ['contact', 'CONTACT']].map(([id, label]) => <a key={id} href={`#${id}`} data-menu-reveal onClick={event => {
           if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
           event.preventDefault()
           close(id)

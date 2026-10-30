@@ -39,7 +39,7 @@ export default function App() {
   }
 
   return <div ref={root} className="app">
-    <a className="skip-link" href="#verix">Skip to selected work</a>
+    <a className="skip-link" href="#projects">Skip to selected work</a>
     <div className="world-fallback" aria-hidden="true" />
     {inBrowser && <WorldBoundary><Suspense fallback={null}><World /></Suspense></WorldBoundary>}
     <div className="ambient-grain" aria-hidden="true" />
@@ -56,7 +56,7 @@ export default function App() {
       <section id="proof" className="proof section-shell" aria-labelledby="proof-title">
         <div className="section-top"><span className="eyebrow">01 / PROOF OF WORK</span><span className="eyebrow dim">IDEAS ARE GOOD. SHIPPED SYSTEMS ARE BETTER.</span></div>
         <h2 id="proof-title" className="proof-heading" data-reveal>LESS TALK.<br /><span>MORE SIGNAL.</span></h2>
-        <div className="achievement-row"><span className="record-label">[ RECOGNITION / 01 ]</span><div className="achievement-event"><h3>CYPHERPUNK</h3><p>LOCAL TRACK — NEPAL · VERIX</p></div><div className="achievement-result"><strong>WINNER</strong><span>$5,000 LOCAL TRACK</span></div><a href="#verix" aria-label="Explore Verix, Cypherpunk winner">↗</a></div>
+        <div className="achievement-row"><span className="record-label">[ RECOGNITION / 01 ]</span><div className="achievement-event"><h3>CYPHERPUNK</h3><p>LOCAL TRACK — NEPAL · VERIX</p></div><div className="achievement-result"><strong>WINNER</strong><span>$5,000 LOCAL TRACK</span></div><a href="#projects" aria-label="Explore selected projects">↗</a></div>
         <div className="achievement-row"><span className="record-label">[ RECOGNITION / 02 ]</span><div className="achievement-event"><h3>ETHONLINE 2025</h3><p>HEDERA AGENT KIT + GOOGLE A2A · SMARTMARKET</p></div><div className="achievement-result"><strong>2ND PLACE</strong><span>BEST USE OF HEDERA AGENT KIT + GOOGLE A2A</span></div><a href="#smartmarket" aria-label="Explore SmartMarket, ETHOnline second place">↗</a></div>
       </section>
 

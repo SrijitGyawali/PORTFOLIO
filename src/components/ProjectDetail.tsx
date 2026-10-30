@@ -72,7 +72,7 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
             <p>{project.description}</p>
           </section>
           <section aria-labelledby="project-problem-title">
-            <h3 id="project-problem-title">The problem</h3>
+            <h3 id="project-problem-title">Engineering focus</h3>
             <p>{project.problem}</p>
           </section>
         </div>
@@ -92,7 +92,7 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
         </section>
 
         <section aria-labelledby="project-decisions-title">
-          <h3 id="project-decisions-title">Technical decisions</h3>
+          <h3 id="project-decisions-title">Implementation highlights</h3>
           <div className="detail-grid">
             {project.decisions.map((decision) => (
               <div key={decision.title}>
@@ -125,7 +125,7 @@ export default function ProjectDetail({ project, onClose }: ProjectDetailProps) 
             )}
             {project.demo && (
               <a className="text-link" href={project.demo} target="_blank" rel="noopener noreferrer" data-cursor="OPEN ↗">
-                PROJECT SHOWCASE <span aria-hidden="true">↗</span>
+                {project.id === 'smartmarket' ? 'ETHGLOBAL SHOWCASE' : 'LIVE DEMO'} <span aria-hidden="true">↗</span>
                 <span className="sr-only"> (opens in a new tab)</span>
               </a>
             )}

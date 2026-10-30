@@ -3,26 +3,30 @@ import { projects, type Project } from '../data/projects'
 import { useProjectEffects } from '../animation/useProjectEffects'
 import '../styles/projects.css'
 
-const presentations: Record<string, { mark: string[]; title: string; brief: string; recognition: string }> = {
-  verix: {
-    mark: ['verix.'], title: 'Real signals. Verifiable credits.',
-    brief: 'IoT monitoring, AI agents and Solana turn environmental data into a traceable carbon credit marketplace.',
-    recognition: 'Cypherpunk winner · Nepal',
-  },
+const presentations: Record<string, { mark: string[]; title: string; brief: string; recognition: string; theme: string; caption: string }> = {
   cex: {
-    mark: ['CEX'], title: 'Order in a concurrent world.',
-    brief: 'A trading engine in Go, exploring order matching, persistent balances and real-time market data. Built around correctness under concurrency.',
-    recognition: 'Backend systems · In development',
+    mark: ['CEX'], title: 'Crash-safe spot exchange.',
+    brief: 'A Go matching engine with a checksummed write-ahead journal, group commit and an exact double-entry ledger. Sustained 3,200 orders/s at 2.4 ms median latency.',
+    recognition: '129,063 / 129,063 acknowledged requests survived crash drills',
+    theme: 'cex', caption: 'ENGINEERED IN GO',
   },
-  tapguard: {
-    mark: ['tapguard', 'vault.'], title: 'One tap. Verified on-chain.',
-    brief: 'NFC payments meet a Solana smart vault, with signature verification, daily spending limits and an emergency freeze.',
-    recognition: 'Cryptographic payments · Solana',
+  swiflo: {
+    mark: ['swiflo.'], title: 'Gulf-to-Nepal remittance.',
+    brief: 'USDC escrow on Solana meets NPR payouts to family eSewa wallets, with a remittance pool, LP liquidity vault and backend settlement service.',
+    recognition: 'INITIATED → ADVANCED → DISBURSED → SETTLED',
+    theme: 'verix', caption: 'USDC TO NPR',
   },
   smartmarket: {
-    mark: ['smart', 'market.'], title: 'Agents coordinate. Value moves.',
-    brief: 'Specialist agents connect user intent, carbon credit trading and blockchain payments through Google A2A and the Hedera Agent Kit.',
-    recognition: 'ETHOnline 2025 · 2nd place in sponsor track',
+    mark: ['smart', 'market.'], title: 'AI-agent carbon marketplace.',
+    brief: 'Eight specialized AI agents coordinate carbon credit purchases, IoT-driven pre-sales and real payments on Hedera, Ethereum and Polygon.',
+    recognition: 'ETHOnline 2025 · 2nd place · Hedera Agent Kit & Google A2A',
+    theme: 'smartmarket', caption: 'INTENT INTO ACTION',
+  },
+  swasthyasetu: {
+    mark: ['swasthya', 'setu.'], title: 'Connected telehealth.',
+    brief: 'A Go backend for English and Nepali first-aid chat via MedGemma, urgent-message flagging and a live queue connecting patients to verified doctors over WebRTC.',
+    recognition: '169 Go tests · GitHub Actions CI',
+    theme: 'tapguard', caption: 'CHAT. CONNECT. CONSULT.',
   },
 }
 
@@ -36,14 +40,14 @@ export default function Projects({ onSelect, onIndex }: { onSelect: (project: Pr
       <button className="projects-index" onClick={event => { event.currentTarget.focus({ preventScroll: true }); onIndex() }}>OPEN PROJECT INDEX <span aria-hidden="true">↗</span></button>
     </header>
     <nav className="project-shortcuts" aria-label="Project shortcuts">
-      {projects.map(project => <a href={`#${project.id}`} key={project.id}><span className="shortcut-number">{project.number}</span><span>{project.id === 'tapguard' ? 'TAPGUARD' : project.name}</span><span className="shortcut-arrow" aria-hidden="true">↗</span></a>)}
+      {projects.map(project => <a href={`#${project.id}`} key={project.id}><span className="shortcut-number">{project.number}</span><span>{project.name}</span><span className="shortcut-arrow" aria-hidden="true">↗</span></a>)}
     </nav>
     <div className="project-deck">
       {projects.map((project, index) => {
         const presentation = presentations[project.id]
         return <Fragment key={project.id}>
           <div className="project-anchor" id={`${project.id}-start`} data-project-anchor={project.id} aria-hidden="true" />
-          <article id={project.id} className={`project-entry project-entry-${project.id}`} style={{ '--project-index': index } as CSSProperties} aria-labelledby={`${project.id}-title`}>
+          <article id={project.id} className={`project-entry project-entry-${presentation.theme}`} style={{ '--project-index': index } as CSSProperties} aria-labelledby={`${project.id}-title`}>
             <div className="project-card">
               <div className="project-art" aria-hidden="true">
                 <div className="project-art-top"><span>{project.category}</span><span>{project.number} / 04</span></div>
@@ -55,7 +59,7 @@ export default function Projects({ onSelect, onIndex }: { onSelect: (project: Pr
                     </div>)}
                   </div>)}
                 </div>
-                <span className="project-art-caption">{project.id === 'cex' ? 'ENGINEERED IN GO' : project.id === 'tapguard' ? 'TAP. VERIFY. TRANSFER.' : project.id === 'smartmarket' ? 'INTENT INTO ACTION' : 'FROM THE GROUND UP'}</span>
+                <span className="project-art-caption">{presentation.caption}</span>
               </div>
               <div className="project-card-body">
                 <span className="project-card-glow" aria-hidden="true" />
