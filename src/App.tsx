@@ -1,7 +1,7 @@
 import { lazy, Suspense, useRef, useState, useSyncExternalStore } from 'react'
 import { useRuntime } from './animation/useRuntime'
 import { useChoreography } from './animation/useChoreography'
-import { runtime, sceneSections } from './animation/runtime'
+import { runtime } from './animation/runtime'
 import { Navigation, NavigationMenu, ProjectIndex } from './components/Navigation'
 import Cursor from './components/Cursor'
 import Capabilities from './components/Capabilities'
@@ -9,8 +9,8 @@ import Architecture from './components/Architecture'
 import Contact from './components/Contact'
 import RuntimeStatus from './components/RuntimeStatus'
 import ProjectDetail from './components/ProjectDetail'
+import Projects from './components/Projects'
 import WorldBoundary from './components/WorldBoundary'
-import { projects } from './data/projects'
 import { profile } from './data/profile'
 import type { Project } from './data/projects'
 
@@ -62,19 +62,7 @@ export default function App() {
 
       <Capabilities />
 
-      <div className="work-intro section-shell"><span className="eyebrow">SELECTED WORK / 01—04</span><h2>REAL PROBLEMS.<br /><span className="outline">WORKING SYSTEMS.</span></h2><button className="text-link" onClick={() => setIndexOpen(true)}>OPEN PROJECT INDEX <span>↗</span></button></div>
-      {projects.map((project, index) => <section id={project.id} className={`project-chapter section-shell project-${project.id}`} key={project.id} aria-labelledby={`${project.id}-title`}>
-        <span className="environment-word" aria-hidden="true">{['VERIFY', 'CONCURRENT', 'ON-CHAIN', 'AGENTS'][index]}</span>
-        <div className="section-top"><span className="eyebrow">{String(sceneSections.findIndex(id => id === project.id)).padStart(2, '0')} / SELECTED WORK</span><span className="eyebrow dim">{project.category}</span></div>
-        <div className="project-main"><div className="project-number" aria-hidden="true">/{project.number}</div><h2 id={`${project.id}-title`} className="project-title" data-reveal>{project.name}</h2><p className="project-statement">{project.statement}</p><p className="project-description">{project.description}</p><button className="project-open" onClick={() => setSelected(project)} data-cursor="VIEW ↗"><span>EXPLORE THE BUILD</span><span className="project-open-arrow">↗</span></button></div>
-        <div className="project-tech-note"><span className="eyebrow signal">ENGINEERING NOTE</span><p>{project.detail}</p></div>
-        <div className="project-footer">
-          <div className="project-stack"><span className="eyebrow dim">BUILT WITH</span><ul aria-label={`${project.name} technologies`}>{project.stack.map(technology => <li key={technology}>{technology}</li>)}</ul></div>
-          <div className="project-path"><span className="eyebrow dim">RUNTIME PATH</span><ol className="project-flow" aria-label={`${project.name} architecture`}>{project.flow.map((stage, stageIndex) => <li key={stage}><span className="flow-step" aria-hidden="true">{String(stageIndex + 1).padStart(2, '0')}</span><span>{stage}</span>{stageIndex < project.flow.length - 1 && <i aria-hidden="true">→</i>}</li>)}</ol></div>
-        </div>
-        {project.award && <div className="project-award"><span>↗</span> {project.award}</div>}
-        <span className="scene-counter" aria-hidden="true">PROJECT {String(index + 1).padStart(2, '0')} OF {String(projects.length).padStart(2, '0')}</span>
-      </section>)}
+      <Projects onSelect={setSelected} onIndex={() => setIndexOpen(true)} />
 
       <Architecture />
 

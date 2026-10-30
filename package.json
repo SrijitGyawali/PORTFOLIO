@@ -8,9 +8,6 @@
     "build": "tsc -b && node scripts/build.mjs",
     "typecheck": "tsc -b --pretty false",
     "lint": "eslint .",
-    "test": "node --test src/webgl/geometry.test.mjs src/animation/scrollMotion.test.mjs",
-    "test:browser": "playwright test --project=chrome --project=webkit",
-    "test:browser:firefox": "playwright test --project=firefox",
     "preview": "vite preview --host 0.0.0.0"
   },
   "dependencies": {

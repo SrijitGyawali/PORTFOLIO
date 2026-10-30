@@ -9,7 +9,11 @@ export function Navigation({ onIndex, open }: { onIndex: () => void; open: boole
   return <header className="site-header">
     <a className="wordmark" href="#home" aria-label="Srijit Gyawali, home"><span>S<span className="wordmark-g">G</span></span><span className="wordmark-dot" aria-hidden="true" /></a>
     <nav aria-label="Main navigation">
-      <button className="menu-toggle" onClick={onIndex} data-cursor="OPEN" aria-haspopup="dialog" aria-expanded={open} aria-controls="navigation-menu">MENU <span className="menu-glyph" aria-hidden="true"><i /><i /><i /></span></button>
+      <button className="menu-toggle" onClick={event => {
+        // Safari does not focus buttons on pointer click; retain a return target.
+        event.currentTarget.focus({ preventScroll: true })
+        onIndex()
+      }} data-cursor="OPEN" aria-haspopup="dialog" aria-expanded={open} aria-controls="navigation-menu">MENU <span className="menu-glyph" aria-hidden="true"><i /><i /></span></button>
     </nav>
   </header>
 }
@@ -20,7 +24,7 @@ export function NavigationMenu({ open, onClose }: { open: boolean; onClose: () =
   return <dialog ref={ref} id="navigation-menu" className="liquid-menu" data-liquid-menu aria-labelledby="navigation-menu-title" onCancel={event => { event.preventDefault(); close() }} onClick={event => { if (event.target === event.currentTarget) close() }}>
     <svg className="menu-curtain" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H1000V1000H0Z" /></svg>
     <div className="menu-content">
-      <header className="menu-header"><span className="menu-brand" aria-hidden="true">SG<span>INSIDE THE RUNTIME</span></span><button className="menu-close" onClick={() => close()} aria-label="Close navigation menu" autoFocus>CLOSE<span className="menu-glyph" aria-hidden="true"><i /><i /><i /></span></button></header>
+      <header className="menu-header"><span className="menu-brand" aria-hidden="true">SG<span>INSIDE THE RUNTIME</span></span><button className="menu-close" onClick={() => close()} aria-label="Close navigation menu" autoFocus>CLOSE<span className="menu-glyph" aria-hidden="true"><i /><i /></span></button></header>
       <h2 id="navigation-menu-title" className="sr-only">Explore the portfolio</h2>
       <nav className="menu-sections" aria-label="Portfolio sections">
         {[['home', 'HOME'], ['verix', 'PROJECTS'], ['about', 'ABOUT'], ['contact', 'CONTACT']].map(([id, label]) => <a key={id} href={`#${id}`} data-menu-reveal onClick={event => {

@@ -22,7 +22,7 @@ A single-page site where a procedural 3D world reshapes itself as you scroll fro
 
 ## About
 
-Most portfolios put projects in a grid of cards. This one treats each project as a chapter. As you scroll, a wireframe sculpture built from a few thousand points rebuilds itself for each chapter: a mesh of sensor and ledger planes for a carbon-credit system, opposing order lanes meeting at a matching core for a trading engine, verification gates for a payment vault.
+The projects form a scroll-driven card stack inspired by the Recent campaigns section on [RIGX](https://rigx.onrender.com/). Each incoming card layers over the previous one, which gently shrinks and darkens. Original project wordmarks, short briefs and technology lists introduce the work, with the full engineering story available in a detail dialog. The rest of the page retains its persistent procedural 3D world.
 
 The 3D scene is decoration only. Every word on the page is real, accessible HTML. If a browser can't run WebGL, the page still shows all the content, links and navigation.
 
@@ -35,12 +35,12 @@ Project descriptions stick to what has been built. There are no invented metrics
 | 00 | **Hero** | Name, role and focus areas. The 3D world starts as a folded data conduit. |
 | 01 | **Proof of work** | Hackathon results: Cypherpunk winner and ETHOnline 2025 second place. |
 | 02 | **Core capabilities** | Three tabs (Backend, Distributed, Web3) listing the tools for each. |
-| 03–06 | **Selected work** | One chapter per project with a summary, stack and data flow, plus a full write-up in a pop-up. |
+| 03–06 | **Projects** | Four sticky cards with a project identity, brief, technologies and recognition. Full architecture and technical decisions open in a detail dialog. |
 | 07 | **Systems thinking** | A clickable request diagram: gateway → Go service → Redis, PostgreSQL and Kafka. |
 | 08 | **The engineer** | A short bio and what Srijit is exploring right now. |
 | 09 | **Contact** | Email with a copy button, GitHub and LinkedIn. |
 
-Floating corner navigation pairs the SG mark with a vertical three-line **MENU** control. A liquid curtain descends over roughly the upper 60% of the desktop viewport, revealing Home, Projects, About, and Contact in sequence, followed by GitHub and LinkedIn. Closing reverses the curtain before navigating. The menu adapts to narrow screens, respects reduced motion and motion pause, contains keyboard focus, and restores focus when dismissed. Selected Work retains a separate four-project index. The bar at the bottom shows the current chapter.
+A compact, centered glass navbar pairs the SG badge with a two-line **MENU** control. The bar floats above the page at up to 440px wide and keeps safe margins on phones. A liquid curtain descends over roughly the upper 60% of the desktop viewport, revealing Home, Projects, About, and Contact in sequence, followed by GitHub and LinkedIn. Closing reverses the curtain before navigating. The menu adapts to narrow screens, respects reduced motion and motion pause, contains keyboard focus, and restores focus when dismissed. Selected Work retains a separate four-project index. The bar at the bottom shows the current chapter.
 
 ## Featured projects
 
@@ -55,7 +55,7 @@ Floating corner navigation pairs the SG mark with a vertical three-line **MENU**
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/screenshots/project-cex.jpg" alt="CEX project chapter with converging order lanes in 3D" /><br /><sub><b>Project chapter.</b> The CEX trading engine, with buy and sell lanes meeting at a matching core.</sub></td>
+    <td width="50%"><img src="docs/screenshots/projects-stack-desktop.jpg" alt="CEX project card layered over Verix in the scrolling project stack" /><br /><sub><b>Project stack.</b> Each project rises over the previous card, with a short brief beside its visual identity.</sub></td>
     <td width="50%"><img src="docs/screenshots/project-detail.jpg" alt="Verix project detail dialog" /><br /><sub><b>Project detail.</b> Overview, problem, data flow, technical decisions and outcome.</sub></td>
   </tr>
   <tr>
@@ -67,7 +67,7 @@ Floating corner navigation pairs the SG mark with a vertical three-line **MENU**
 <table>
   <tr>
     <td width="25%"><img src="docs/screenshots/mobile-hero.jpg" alt="Hero on a phone" /></td>
-    <td width="25%"><img src="docs/screenshots/mobile-project.jpg" alt="TapGuard Vault chapter on a phone" /></td>
+    <td width="25%"><img src="docs/screenshots/projects-stack-mobile.jpg" alt="TapGuard Vault card with a readable project brief and action on a phone" /></td>
     <td width="50%"><b>On mobile</b><br /><br />The layout adapts down to 320px wide. The 3D scene uses fewer points, touch scrolling stays native, and every label stays readable without zooming.</td>
   </tr>
 </table>
@@ -82,7 +82,6 @@ Floating corner navigation pairs the SG mark with a vertical three-line **MENU**
 | Scrolling | [StringTune](https://tune.fiddle.digital/) | Smooth desktop scrolling and the shared clock that drives all scroll animation |
 | Text animation | [Anime.js](https://animejs.com/) | The hero name assembling letter by letter on load |
 | Fonts | Barlow Condensed, Manrope, IBM Plex Mono | Self-hosted through Fontsource, so no requests go to Google Fonts |
-| Tests | Node test runner + Playwright | Unit tests for the math, browser tests for behaviour |
 
 ### The 3D world
 
@@ -92,7 +91,10 @@ Floating corner navigation pairs the SG mark with a vertical three-line **MENU**
 
 ### Motion rules
 
-- Scrolling moves text and changes its depth, but never fades or shrinks it.
+- Active project briefs remain fully readable. Earlier cards recede as the next one arrives; project wordmarks move with subtle parallax while two rows of outlined background text loop horizontally in opposite directions.
+- Frosted project briefs have a soft, pointer-following glow clipped inside the panel. Outline loops pause offscreen and when the tab is hidden; both effects respect motion controls.
+- Cards use native sticky positioning and the existing StringTune clock. Stable flow markers preserve deep links, chapter tracking and browser history.
+- On mobile, cards arrange their visual above the brief. If the cards cannot fit the viewport, they use ordinary document flow. Reduced motion and motion pause also remove stacking.
 - The **Pause motion** button and the system *reduce motion* setting both stop all ambient animation.
 - Phones and tablets keep native touch scrolling.
 
@@ -162,8 +164,6 @@ Then open [http://localhost:5173](http://localhost:5173).
 | `npm run preview` | Serves the production build locally |
 | `npm run lint` | Runs ESLint |
 | `npm run typecheck` | Runs the TypeScript compiler without emitting files |
-| `npm test` | Runs the unit tests for the 3D geometry and scroll math |
-| `npm run test:browser` | Runs the Playwright tests in Chrome and WebKit (start `npm run dev` first) |
 
 ## Deploy
 
@@ -212,18 +212,10 @@ src/
 ├── webgl/               Three.js world, procedural geometry, shaders, name sampling
 └── styles/              Design tokens, layout, readability layer, navigation, scroll motion
 scripts/                 Production build, prerender and SEO file generation
-tests/                   Playwright browser tests and a screenshot script
 docs/                    Implementation notes and README screenshots
 ```
 
 Design intent and principles are in [`PRODUCT.md`](PRODUCT.md). The original build plan is in [`docs/implementation.md`](docs/implementation.md).
-
-## Testing
-
-- **12 unit tests** check that the 3D formations are valid and deterministic, that scroll motion reverses exactly, and that text keeps full contrast at every scroll position.
-- **29 browser checks across Chrome and WebKit** cover project dialogs, the compact curtain menu and interrupted closing, keyboard focus, scroll and history behaviour, motion pause, reduced motion, readable layouts down to 320px, desktop panel separation, email copying, and WebGL failures.
-
-WebKit tests use Playwright's WebKit engine, which is close to Safari but not the same as testing on a real iPhone. Firefox tests are optional: run `npx playwright install firefox` and then `npm run test:browser:firefox`.
 
 ## Contact
 

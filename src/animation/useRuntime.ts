@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import StringTune from '@fiddle-digital/string-tune'
 import { runtime, sceneSections } from './runtime'
 import { createScrollChoreography } from './scrollChoreography'
+import { createProjectStack, projectAnchor, projectPin } from './projectStack'
 
 let tune: StringTune | undefined
 
@@ -39,6 +40,7 @@ export function useRuntime(): void {
     const engine = getTune()
     const root = document.documentElement
     const choreography = createScrollChoreography(document.getElementById('root')!)
+    const projectStack = createProjectStack(document.getElementById('root')!)
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
     const coarseQuery = window.matchMedia('(pointer: coarse)')
     const chapters = sceneSections.map((id, index) => ({
@@ -49,7 +51,7 @@ export function useRuntime(): void {
     }))
     const progressNodes = Array.from(document.querySelectorAll<HTMLElement>('[data-global-progress]'))
     const chapterNodes = Array.from(document.querySelectorAll<HTMLElement>('[data-current-chapter]'))
-    const navigationLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('.site-header a[href^="#"], .menu-sections a[href^="#"]'))
+    const navigationLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('.site-header a[href^="#"], .menu-sections a[href^="#"], .project-shortcuts a[href^="#"]'))
     let range = 1
     let viewport = window.innerHeight
     let previousScroll = engine.scrollPosition
@@ -126,7 +128,7 @@ export function useRuntime(): void {
         root.dataset.chapter = current.id
         for (const link of navigationLinks) {
           const id = link.hash.slice(1)
-          const isCurrent = id === current.id || id === 'verix' && active >= 3 && active <= 6
+          const isCurrent = id === current.id || id === 'verix' && link.closest('.menu-sections') && active >= 3 && active <= 6
           if (isCurrent) link.setAttribute('aria-current', 'location')
           else link.removeAttribute('aria-current')
         }
@@ -137,15 +139,17 @@ export function useRuntime(): void {
       measureFrame = 0
       viewport = window.innerHeight
       for (const chapter of chapters) {
-        if (chapter.element) chapter.top = chapter.element.getBoundingClientRect().top + window.scrollY
+        if (chapter.element) chapter.top = projectAnchor(chapter.id)!.getBoundingClientRect().top + window.scrollY
       }
       engine.onResize(true)
       syncDialogs()
       range = Math.max(1, engine.scrollHeight - engine.containerHeight)
       runtime.scroll = engine.scrollPosition
       choreography.measure()
+      projectStack.measure()
       updateScene()
       choreography.update(runtime.scroll, runtime.velocity, runtime.reducedMotion || runtime.paused)
+      projectStack.update(runtime.scroll, runtime.reducedMotion || runtime.paused)
     }
     const queueMeasure = () => {
       if (!measureFrame) measureFrame = requestAnimationFrame(measure)
@@ -168,7 +172,10 @@ export function useRuntime(): void {
       if (Math.abs(runtime.velocity) < 0.001) runtime.velocity = 0
       previousScroll = engine.scrollPosition
       previousTime = now
-      if (runtime.visible) choreography.update(runtime.scroll, runtime.velocity, runtime.reducedMotion || runtime.paused)
+      if (runtime.visible) {
+        choreography.update(runtime.scroll, runtime.velocity, runtime.reducedMotion || runtime.paused)
+        projectStack.update(runtime.scroll, runtime.reducedMotion || runtime.paused)
+      }
     }
     const syncMotion = () => {
       runtime.reducedMotion = motionQuery.matches
@@ -190,9 +197,10 @@ export function useRuntime(): void {
       }
       updateScene()
       choreography.update(runtime.scroll, runtime.velocity, runtime.reducedMotion || runtime.paused)
+      projectStack.update(runtime.scroll, runtime.reducedMotion || runtime.paused)
     }
 
-    const navigate = (id: string, immediate = false) => {
+    const navigate = (id: string, immediate = false, focusTarget = true) => {
       const target = document.getElementById(id)
       if (!target) return
       if (navigateFrame) cancelAnimationFrame(navigateFrame)
@@ -201,18 +209,21 @@ export function useRuntime(): void {
         navigateFrame = 0
         syncDialogs()
         engine.onResize(true)
-        const distance = Math.abs(target.getBoundingClientRect().top - 88)
+        const anchor = projectAnchor(id)!
+        const offset = target.classList.contains('project-entry')
+          ? projectPin(target) : 88
+        const distance = Math.abs(anchor.getBoundingClientRect().top - offset)
         engine.scrollTo({
-          selector: `#${CSS.escape(id)}`,
-          offset: id === 'home' ? 0 : -88,
+          selector: `#${CSS.escape(anchor.id)}`,
+          offset: id === 'home' ? 0 : -offset,
           immediate: immediate || runtime.reducedMotion || runtime.paused || coarseQuery.matches || window.innerWidth < 1024,
           duration: clamp(420 + distance * 0.035, 420, 780),
         })
-        if (!target.hasAttribute('tabindex')) {
+        if (focusTarget && !target.hasAttribute('tabindex')) {
           target.setAttribute('tabindex', '-1')
           focusTargets.add(target)
         }
-        target.focus({ preventScroll: true })
+        if (focusTarget) target.focus({ preventScroll: true })
       })
     }
 
@@ -225,6 +236,16 @@ export function useRuntime(): void {
     const onMenuNavigate = (event: Event) => {
       const id = (event as CustomEvent<unknown>).detail
       if (typeof id === 'string' && document.getElementById(id)) visitSection(id)
+    }
+    const onProjectFocus = (event: FocusEvent) => {
+      // Tabbing back into a covered card must bring its actions back into view.
+      const target = event.target
+      if (!(target instanceof HTMLElement) || !target.matches('button, a')) return
+      const entry = target.closest<HTMLElement>('.project-entry')
+      if (entry && entry.closest<HTMLElement>('.project-deck')?.dataset.stack === 'enabled' && !runtime.paused && !runtime.reducedMotion) {
+        const anchor = projectAnchor(entry.id)!
+        if (anchor.getBoundingClientRect().top < 0) navigate(entry.id, true, false)
+      }
     }
     const onAnchor = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
@@ -287,6 +308,7 @@ export function useRuntime(): void {
     coarseQuery.addEventListener('change', syncMotion)
     document.addEventListener('click', onAnchor, true)
     document.addEventListener('portfolio:menu-navigate', onMenuNavigate)
+    document.addEventListener('focusin', onProjectFocus)
     document.addEventListener('keydown', preserveControlKeys)
     window.addEventListener('popstate', restoreHistory)
     window.addEventListener('hashchange', restoreHistory)
@@ -308,7 +330,14 @@ export function useRuntime(): void {
     // modal lock only when the mode actually changes, without a frame-loop reset.
     dialogObserver.observe(root, { attributes: true, attributeFilter: ['data-string-scroll-mode'] })
     let mounted = true
-    void document.fonts.ready.then(() => { if (mounted) queueMeasure() })
+    const initialHash = location.hash
+    void document.fonts.ready.then(() => {
+      if (!mounted) return
+      queueMeasure()
+      if (initialHash && location.hash === initialHash) {
+        try { navigate(decodeURIComponent(initialHash.slice(1)), true) } catch { /* Malformed external hash. */ }
+      }
+    })
     const armSmooth = () => {
       window.clearTimeout(quietTimer)
       cancelAnimationFrame(quietFrame)
@@ -341,6 +370,7 @@ export function useRuntime(): void {
       motionObserver.disconnect()
       dialogObserver.disconnect()
       choreography.destroy()
+      projectStack.destroy()
       if (modalOpen) engine.unlockPageScroll()
       isolatedDialogs.forEach(dialog => dialog.removeAttribute('data-string-isolation'))
       focusTargets.forEach(target => target.removeAttribute('tabindex'))
@@ -351,6 +381,7 @@ export function useRuntime(): void {
       coarseQuery.removeEventListener('change', syncMotion)
       document.removeEventListener('click', onAnchor, true)
       document.removeEventListener('portfolio:menu-navigate', onMenuNavigate)
+      document.removeEventListener('focusin', onProjectFocus)
       document.removeEventListener('keydown', preserveControlKeys)
       window.removeEventListener('popstate', restoreHistory)
       window.removeEventListener('hashchange', restoreHistory)

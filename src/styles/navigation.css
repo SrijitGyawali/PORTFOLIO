@@ -1,23 +1,20 @@
-/* The floating controls stay put while the menu's curtain moves below them. */
-.site-header { height: 116px; padding: 24px var(--gutter); align-items: flex-start; background: none; border: 0; box-shadow: none; pointer-events: none; }
-.site-header .wordmark, .site-header nav { pointer-events: auto; }
-.wordmark { position: relative; display: grid; place-items: center; flex: 0 0 58px; width: 58px; height: 60px; padding: 0; background: #060708d9; font: 600 43px/1 var(--display); letter-spacing: -2px; }
+/* A compact glass bar floats above the page without covering its full width. */
+.site-header { top: max(18px, env(safe-area-inset-top)); left: 50%; width: min(440px, calc(100% - 32px)); height: 54px; padding: 4px; gap: 20px; align-items: center; transform: translateX(-50%); border: 1px solid #edf5e529; border-radius: 15px; background: linear-gradient(115deg, #ffffff0d, #ffffff00 55%), #111710b8; backdrop-filter: blur(22px) saturate(1.3); -webkit-backdrop-filter: blur(22px) saturate(1.3); box-shadow: inset 0 1px 0 #ffffff0b, 0 8px 30px #0003; }
+.wordmark { position: relative; display: grid; place-items: center; flex: 0 0 78px; width: 78px; height: 44px; padding: 0; border-radius: 10px; background: #060708eb; color: var(--paper); font: 600 34px/1 var(--display); letter-spacing: -1.5px; }
 .wordmark-g { color: var(--signal); transform: none; }
-.wordmark-dot { position: absolute; top: 8px; right: 6px; margin: 0; width: 4px; height: 4px; }
+.wordmark-dot { position: absolute; top: 9px; right: 12px; margin: 0; width: 3px; height: 3px; }
 .site-header nav { margin-left: auto; font: 500 14px/1 var(--mono); letter-spacing: .04em; }
-.site-header nav .menu-toggle { display: flex; align-items: center; gap: 20px; min-height: 60px; padding: 10px 16px; background: #060708df; color: var(--paper); }
+.site-header nav .menu-toggle { display: flex; align-items: center; gap: 14px; min-height: 44px; padding: 10px 14px; border-radius: 10px; background: transparent; color: var(--paper); transition: color .2s, background .2s; }
 .site-header nav .menu-toggle::after { display: none; }
-.menu-glyph { display: flex; gap: 7px; width: 28px; height: 36px; align-items: center; }
-.menu-glyph i { display: block; width: 1px; height: 30px; background: currentColor; position: relative; transition: transform .45s cubic-bezier(.16, 1, .3, 1); }
-.menu-glyph i:first-child { transform: translateY(-3px); }
-.menu-glyph i:nth-child(2) { height: 22px; }
-.menu-glyph i:last-child { transform: translateY(3px); }
-.menu-glyph i:first-child::before, .menu-glyph i:last-child::after { content: ''; position: absolute; left: -3px; width: 7px; height: 7px; border: 1px solid currentColor; border-radius: 50%; background: var(--glyph-bg, var(--ink)); }
-.menu-glyph i:first-child::before { top: -3px; }
-.menu-glyph i:last-child::after { bottom: -3px; }
+.menu-glyph { position: relative; display: block; flex: 0 0 20px; width: 20px; height: 20px; }
+.menu-glyph i { display: block; position: absolute; top: 9px; width: 20px; height: 2px; background: currentColor; transition: transform .35s cubic-bezier(.16, 1, .3, 1); }
+.menu-glyph i:first-child { transform: translateY(-4px); }
+.menu-glyph i:last-child { transform: translateY(4px); }
 .menu-toggle:hover { color: var(--signal) !important; }
-.menu-toggle:hover .menu-glyph i:first-child { transform: translateY(3px); }
-.menu-toggle:hover .menu-glyph i:last-child { transform: translateY(-3px); }
+.site-header nav .menu-toggle:hover { background: #ffffff0a; }
+.menu-toggle:hover .menu-glyph i:first-child { transform: translateY(-3px); }
+.menu-toggle:hover .menu-glyph i:last-child { transform: translateY(3px); }
+.site-header :focus-visible { outline-offset: 2px; }
 
 /* The dialog provides focus containment; only its upper curtain is opaque. */
 .liquid-menu {
@@ -39,7 +36,8 @@
 .menu-brand > span { font: 500 12px/1.5 var(--mono); letter-spacing: .04em; }
 .menu-close { display: flex; align-items: center; gap: 20px; min-height: 60px; padding: 10px 16px; font: 500 14px/1 var(--mono); }
 .menu-close .menu-glyph { transform: rotate(var(--menu-icon-turn, 90deg)); }
-.menu-close .menu-glyph i { transform: none; }
+.menu-close .menu-glyph i:first-child { transform: rotate(45deg); }
+.menu-close .menu-glyph i:last-child { transform: rotate(-45deg); }
 .menu-close:hover { color: #395323; }
 .menu-sections { display: grid; grid-template-columns: repeat(3, auto); justify-content: center; justify-items: center; column-gap: clamp(28px, 5vw, 80px); row-gap: 12px; margin-top: clamp(12px, 3vh, 30px); }
 .menu-sections a { display: inline-flex; align-items: flex-start; gap: 10px; color: var(--menu-ink); font: 600 clamp(54px, 5.8vw, 90px)/1.02 var(--display); letter-spacing: -.025em; white-space: nowrap; }
@@ -71,10 +69,8 @@
 .index-list a:hover .index-name { color: var(--signal); }
 
 @media (max-width: 767px) {
-  .site-header { height: 96px; padding: 16px; }
-  .wordmark { width: 52px; height: 56px; flex-basis: 52px; font-size: 39px; }
+  .site-header { top: max(12px, env(safe-area-inset-top)); }
   .site-header nav { font-size: 14px; }
-  .site-header nav .menu-toggle { min-height: 56px; gap: 14px; padding-inline: 14px; }
   .liquid-menu { --menu-height: min(620px, max(490px, 72svh), calc(100svh - 16px)); }
   .menu-content { padding: 16px 24px 22px; }
   .menu-header { min-height: 56px; }
@@ -100,3 +96,6 @@
   .menu-header { position: sticky; top: 0; z-index: 1; background: var(--menu-surface); }
 }
 @media (prefers-reduced-motion: reduce) { .menu-glyph i { transition: none; } }
+@media (prefers-reduced-transparency: reduce) {
+  .site-header { background: #141a16; backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
